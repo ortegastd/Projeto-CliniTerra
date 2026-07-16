@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Consulta - Projeto CliniTerra</title>
+    <style>
+        :root {
+            --marrom-escuro: #3E2723;
+            --marrom-claro: #8C391A;
+            --cinza-claro: #D3D3D3;
+            --branco: #FFFFFF;
+            --verde-sucesso: #2E7D32;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #973F2D 0%, #532A1B 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-cadastro {
+            background-color: var(--marrom-escuro);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            color: var(--branco);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--cinza-claro);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--cinza-claro);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(211, 211, 211, 0.4);
+            border-radius: 6px;
+            background-color: transparent;
+            color: var(--branco);
+            font-size: 14px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        select option {
+            background-color: var(--marrom-escuro);
+            color: var(--branco);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--marrom-claro);
+        }
+
+        .btn-enviar {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--marrom-claro);
+            color: var(--branco);
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-enviar:hover {
+            background-color: #BCAAA4;
+            color: var(--marrom-escuro);
+        }
+
+        .btn-voltar {
+            display: block;
+            text-align: center;
+            color: var(--cinza-claro);
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .btn-voltar:hover {
+            color: var(--branco);
+            text-decoration: underline;
+        }
+
+        .mensagem-sucesso {
+            background-color: var(--verde-sucesso);
+            color: var(--branco);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .mensagem-vazio {
+            background-color: rgba(211, 211, 211, 0.15);
+            color: var(--cinza-claro);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-cadastro">
+        <h2>Agendar Consulta</h2>
+
+        {% if cadastrado %}
+            <div class="mensagem-sucesso">
+                ✓ Consulta agendada com sucesso!
+            </div>
+        {% endif %}
+
+        {% if usuarios %}
+        <form method="POST" action="{% url 'cadastro_consulta' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="usuario">Paciente</label>
+                <select id="usuario" name="usuario" required>
+                    <option value="" disabled selected>Selecione o paciente</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.id_usuario }}">{{ usuario.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo">Tipo de Consulta</label>
+                <select id="tipo" name="tipo" required>
+                    {% for valor, rotulo in tipos %}
+                        <option value="{{ valor }}">{{ rotulo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="data">Data</label>
+                <input type="date" id="data" name="data" required>
+            </div>
+
+            <div class="form-group">
+                <label for="hora">Hora</label>
+                <input type="time" id="hora" name="hora" required>
+            </div>
+
+            <div class="form-group">
+                <label for="observacoes">Observações (opcional)</label>
+                <textarea id="observacoes" name="observacoes" rows="3" placeholder="Alguma observação sobre a consulta"></textarea>
+            </div>
+
+            <button type="submit" class="btn-enviar">AGENDAR CONSULTA</button>
+
+            <a href="{% url 'home' %}" class="btn-voltar">← Voltar para o Início</a>
+        </form>
+        {% else %}
+            <div class="mensagem-vazio">
+                Nenhum paciente cadastrado ainda. Cadastre um paciente antes de agendar uma consulta.
+            </div>
+            <a href="{% url 'cadastro' %}" class="btn-voltar">← Ir para Cadastro de Cliente</a>
+        {% endif %}
+    </div>
+</body>
+</html>

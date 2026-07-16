@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banco de Dados Cadastrais - Projeto CliniTerra</title>
+    <title>Consultas Registradas - Projeto CliniTerra</title>
     <style>
         :root {
             --marrom-escuro: #3E2723;
@@ -30,7 +30,7 @@
             border-radius: 12px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 700px; 
+            max-width: 850px;
             color: var(--branco);
             text-align: center;
             position: relative;
@@ -92,69 +92,69 @@
             background-color: rgba(211, 47, 47, 0.2);
         }
 
-        .btn-limpar-tudo {
+        .btn-nova-consulta {
             display: inline-block;
             width: 100%;
             padding: 12px;
-            background-color: transparent;
-            color: var(--vermelho);
-            border: 1px solid var(--vermelho);
+            background-color: var(--marrom-claro);
+            color: var(--branco);
             border-radius: 6px;
             font-weight: bold;
             text-decoration: none;
             box-sizing: border-box;
-            transition: all 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
             text-align: center;
             font-size: 14px;
         }
 
-        .btn-limpar-tudo:hover {
-            background-color: var(--vermelho);
-            color: var(--branco);
+        .btn-nova-consulta:hover {
+            background-color: #BCAAA4;
+            color: var(--marrom-escuro);
         }
     </style>
 </head>
 <body>
     <div class="card-lista">
         <a href="{% url 'home' %}" class="link-voltar-painel">← Sair do Painel Administrativo</a>
-        <a href="{% url 'lista_consultas' %}" class="link-voltar-painel" style="float: right;">Ver Consultas →</a>
 
-        <h2>Banco de Dados Cadastrais</h2>
+        <h2>Consultas Registradas</h2>
 
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nome</th>
-                    <th>Idade (anos)</th>
-                    <th>Telefone</th>
+                    <th>Paciente</th>
+                    <th>Tipo</th>
+                    <th>Data</th>
+                    <th>Hora</th>
+                    <th>Observações</th>
                     <th style="text-align: center;">Ações</th>
                 </tr>
             </thead>
             <tbody>
-                {% for usuario in usuarios %}
+                {% for consulta in consultas %}
                 <tr>
-                    <td>{{ usuario.id_usuario }}</td>
-                    <td>{{ usuario.nome }}</td>
-                    <td>{{ usuario.idade }}</td>
-                    <td>{{ usuario.telefone }}</td>
+                    <td>{{ consulta.id_consulta }}</td>
+                    <td>{{ consulta.usuario.nome }}</td>
+                    <td>{{ consulta.get_tipo_display }}</td>
+                    <td>{{ consulta.data|date:"d/m/Y" }}</td>
+                    <td>{{ consulta.hora|time:"H:i" }}</td>
+                    <td>{{ consulta.observacoes|default:"—" }}</td>
                     <td style="text-align: center;">
-                        <a href="{% url 'excluir_usuario' usuario.id_usuario %}" class="btn-excluir" onclick="return confirm('Deseja realmente excluir este cliente?');">❌</a>
+                        <a href="{% url 'excluir_consulta' consulta.id_consulta %}" class="btn-excluir" onclick="return confirm('Deseja realmente excluir esta consulta?');">❌</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" style="text-align: center; color: var(--cinza-claro);">
-                        Nenhum registro encontrado no banco de dados.
+                    <td colspan="7" style="text-align: center; color: var(--cinza-claro);">
+                        Nenhuma consulta registrada.
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        {% if usuarios %}
-            <a href="{% url 'limpar_banco' %}" class="btn-limpar-tudo" onclick="return confirm('Tem certeza que deseja apagar TODOS os clientes do banco de dados?');">⚠️ APAGAR TODOS OS REGISTROS</a>
-        {% endif %}
+        <a href="{% url 'cadastro_consulta' %}" class="btn-nova-consulta">+ AGENDAR NOVA CONSULTA</a>
     </div>
 </body>
 </html>

@@ -86,11 +86,14 @@
 <body>
 
     <a href="{% url 'lista_clientes' %}" class="acesso-secreto" title="Acesso Administrativo">🛢️</a>
+    <a href="{% url 'lista_consultas' %}" class="acesso-secreto" style="right: 45px;" title="Consultas Registradas">🩺</a>
 
     <div class="card-home">
         <h1>Projeto CliniTerra</h1>
         <p>Seja bem-vindo ao nosso sistema!</p>
         <a href="{% url 'cadastro' %}" class="btn-entrar">REALIZAR CADASTRO</a>
+        <a href="{% url 'cadastro_consulta' %}" class="btn-entrar" style="margin-top: 12px; background-color: transparent; border: 1px solid var(--marrom-claro);">AGENDAR CONSULTA</a>
+        <a href="{% url 'consultar_agendamentos' %}" class="btn-entrar" style="margin-top: 12px; background-color: transparent; border: 1px solid var(--marrom-claro);">CONSULTAR AGENDAMENTOS</a>
     </div>
 </body>
 </html>
