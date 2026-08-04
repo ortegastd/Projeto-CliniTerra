@@ -30,7 +30,11 @@ O **CliniTerra** é uma aplicação web desenvolvida em **Python** utilizando o 
 
 Siga os passos abaixo para testar o CliniTerra em sua máquina local.
 
-**1. Navegue até a pasta raiz do projeto onde está o arquivo manage.py**
+**1. Clone o repositório e navegue até a pasta do projeto:**
+```bash
+git clone https://github.com/ortegastd/Projeto-CliniTerra.git
+cd Projeto-CliniTerra
+```
 
 **2. Instale o Django (caso ainda não possua):**
 ```bash
