@@ -128,44 +128,37 @@
 </head>
 <body>
     <div class="container">
-        <h2>Meus Agendamentos</h2>
+        <h2>Meu Painel</h2>
         
-        <form method="GET" action="{% url 'consultar_agendamentos' %}" class="search-box">
-            <input type="text" name="nome" placeholder="Digite seu nome para buscar..." value="{{ nome_busca }}">
-            <button type="submit" class="btn-buscar">PESQUISAR</button>
-        </form>
+        <div style="margin-bottom: 30px; text-align: center; color: var(--cinza-claro);">
+            Bem-vindo(a), <strong>{{ paciente.nome }}</strong>! Aqui estão as suas consultas agendadas:
+        </div>
 
-        {% if nome_busca %}
-            {% if consultas %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Paciente</th>
-                            <th>Tipo</th>
-                            <th>Data</th>
-                            <th>Hora</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for consulta in consultas %}
-                        <tr>
-                            <td>{{ consulta.paciente.nome }}</td>
-                            <td>{{ consulta.tipo }}</td>
-                            <td>{{ consulta.data|date:"d/m/Y" }}</td>
-                            <td>{{ consulta.hora|time:"H:i" }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <div class="empty-message">Nenhum agendamento encontrado para o nome digitado.</div>
-            {% endif %}
+        {% if consultas %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Data</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                    <tr>
+                        <td>{{ consulta.tipo }}</td>
+                        <td>{{ consulta.data|date:"d/m/Y" }}</td>
+                        <td>{{ consulta.hora|time:"H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
-            <div class="empty-message">Digite o seu nome acima para pesquisar.</div>
+            <div class="empty-message">Nenhuma consulta agendada para você no momento.</div>
         {% endif %}
         
         <div class="actions">
-            <a href="{% url 'home' %}" class="btn-voltar">← Voltar para o Início</a>
+            <a href="{% url 'sair' %}" class="btn-voltar">Sair da Conta</a>
         </div>
     </div>
 </body>

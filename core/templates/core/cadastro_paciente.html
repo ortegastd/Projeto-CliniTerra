@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Projeto CliniTerra</title>
+    <style>
+        :root {
+            --marrom-escuro: #3E2723;
+            --marrom-claro: #8C391A;
+            --cinza-claro: #D3D3D3;
+            --branco: #FFFFFF;
+            --vermelho: #D32F2F;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #973F2D 0%, #532A1B 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-cadastro {
+            background-color: var(--marrom-escuro);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px; 
+            color: var(--branco);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--cinza-claro);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--cinza-claro);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(211, 211, 211, 0.4);
+            border-radius: 6px;
+            background-color: transparent;
+            color: var(--branco);
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--marrom-claro);
+        }
+
+        .btn-enviar {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--marrom-claro);
+            color: var(--branco);
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-enviar:hover {
+            background-color: #BCAAA4;
+            color: var(--marrom-escuro);
+        }
+
+        .btn-voltar {
+            display: block;
+            text-align: center;
+            color: var(--cinza-claro);
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .btn-voltar:hover {
+            color: var(--branco);
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #FFBDBD;
+            background-color: rgba(211, 47, 47, 0.3);
+            border: 1px solid var(--vermelho);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-cadastro">
+        <h2>Criar Conta</h2>
+
+        {% if erro %}
+            <div class="error-message">
+                {{ erro }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'cadastro_paciente' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nascimento">Data de Nascimento</label>
+                <input type="date" id="nascimento" name="nascimento" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="tel" id="telefone" name="telefone" placeholder="(DD) 99999-9999" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="senha">Senha (Mínimo de 8 caracteres)</label>
+                <input type="password" id="senha" name="senha" minlength="8" placeholder="Digite sua senha" required>
+            </div>
+
+            <button type="submit" class="btn-enviar">CADASTRAR</button>
+            
+            <a href="{% url 'home' %}" class="btn-voltar">Já tenho conta. Fazer Login</a>
+        </form>
+    </div>
+</body>
+</html>

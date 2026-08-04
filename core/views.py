@@ -3,38 +3,85 @@ from django.db import connection
 from datetime import datetime
 from .models import Usuario, Consulta
 
-# 1. Página de Boas-Vindas
+# 1. Página de Boas-Vindas / Login
 def home_view(request):
-    return render(request, 'core/home.html')
-
-# 2. Página de Cadastro (Isolada)
-def cadastro_view(request):
-    sucesso = False  
-    
+    erro = None
     if request.method == 'POST':
-        nome_completo = request.POST.get('nome_completo')
-        data_nascimento_str = request.POST.get('data_nascimento')
-        telefone_informado = request.POST.get('telefone')
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+        try:
+            paciente = Usuario.objects.get(email=email, senha=senha)
+            request.session['paciente_id'] = paciente.id_usuario
+            return redirect('consultar_agendamentos')
+        except Usuario.DoesNotExist:
+            erro = "E-mail ou senha incorretos."
+            
+    return render(request, 'core/home.html', {'erro': erro})
 
-        if nome_completo and data_nascimento_str:
+# 1.5 Auto-cadastro do paciente
+def cadastro_paciente_view(request):
+    erro = None
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        nascimento_str = request.POST.get('nascimento')
+        telefone = request.POST.get('telefone')
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+
+        if len(senha) < 8:
+            erro = "A senha deve ter no mínimo 8 caracteres."
+        elif Usuario.objects.filter(email=email).exists():
+            erro = "Este e-mail já está cadastrado."
+        else:
             try:
-                data_nasc = datetime.strptime(data_nascimento_str, '%Y-%m-%d')
-                hoje = datetime.today()
-                idade_calculada = hoje.year - data_nasc.year - ((hoje.month, hoje.day) < (data_nasc.month, data_nasc.day))
-                
-                Usuario.objects.create(nome=nome_completo, id_usuario=None, idade=idade_calculada, telefone=telefone_informado)
-                sucesso = True  
+                # Calcula idade
+                nascimento = datetime.strptime(nascimento_str, '%Y-%m-%d').date()
+                hoje = datetime.now().date()
+                idade = hoje.year - nascimento.year - ((hoje.month, hoje.day) < (nascimento.month, nascimento.day))
+
+                paciente = Usuario.objects.create(
+                    nome=nome,
+                    idade=idade,
+                    telefone=telefone,
+                    email=email,
+                    senha=senha
+                )
+                request.session['paciente_id'] = paciente.id_usuario
+                return redirect('consultar_agendamentos')
             except Exception as e:
-                print("ERRO AO SALVAR:", e)
+                erro = "Ocorreu um erro ao realizar o cadastro."
 
-    return render(request, 'core/hello.html', {'cadastrado': sucesso})
+    return render(request, 'core/cadastro_paciente.html', {'erro': erro})
 
-# 3. Exibir Banco de Dados Cadastrais
+# Sair (Logout)
+def sair_view(request):
+    request.session.flush()
+    return redirect('home')
+
+# 2. Tela de Cadastro pela Recepção (Mantida)
+def cadastro_view(request):
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        nascimento_str = request.POST.get('nascimento')
+        telefone = request.POST.get('telefone')
+        
+        # Calcular Idade (simples)
+        nascimento = datetime.strptime(nascimento_str, '%Y-%m-%d').date()
+        hoje = datetime.now().date()
+        idade = hoje.year - nascimento.year - ((hoje.month, hoje.day) < (nascimento.month, nascimento.day))
+        
+        # Salvar no BD
+        Usuario.objects.create(nome=nome, idade=idade, telefone=telefone)
+        return render(request, 'core/hello.html', {'nome': nome, 'idade': idade, 'telefone': telefone})
+        
+    return render(request, 'core/cadastro.html')
+
+# 3. Lista de Clientes (Painel Admin)
 def lista_view(request):
-    usuarios = Usuario.objects.all().order_by('-id_usuario')
+    usuarios = Usuario.objects.all()
     return render(request, 'core/lista_usuarios.html', {'usuarios': usuarios})
 
-# 4. Lixeira Individual (❌)
+# 4. Excluir um usuário (Lixeira)
 def excluir_usuario_view(request, id_usuario):
     usuario = get_object_or_404(Usuario, id_usuario=id_usuario)
     usuario.delete()
@@ -47,7 +94,7 @@ def limpar_banco_view(request):
         cursor.execute("DELETE FROM sqlite_sequence WHERE name='core_usuario';")
     return redirect('lista_clientes')
 
-# 6. Agendar Consulta
+# 6. Agendar Consulta (Recepção)
 def agendar_consulta_view(request):
     sucesso = False
     usuarios = Usuario.objects.all().order_by('nome')
@@ -73,12 +120,14 @@ def agendar_consulta_view(request):
                 
     return render(request, 'core/agendar_consulta.html', {'usuarios': usuarios, 'sucesso': sucesso})
 
-# 7. Consultar Agendamentos por Nome
+# 7. Consultar Agendamentos (Painel do Paciente)
 def consultar_agendamentos_view(request):
-    nome_busca = request.GET.get('nome', '')
-    consultas = []
+    paciente_id = request.session.get('paciente_id')
     
-    if nome_busca:
-        consultas = Consulta.objects.filter(paciente__nome__icontains=nome_busca).order_by('data', 'hora')
+    if not paciente_id:
+        return redirect('home')
         
-    return render(request, 'core/consultar_agendamentos.html', {'consultas': consultas, 'nome_busca': nome_busca})
+    paciente = get_object_or_404(Usuario, id_usuario=paciente_id)
+    consultas = Consulta.objects.filter(paciente=paciente).order_by('data', 'hora')
+        
+    return render(request, 'core/consultar_agendamentos.html', {'consultas': consultas, 'paciente': paciente})

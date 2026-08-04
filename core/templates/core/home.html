@@ -89,11 +89,29 @@
 
     <div class="card-home">
         <h1>Projeto CliniTerra</h1>
-        <p>Seja bem-vindo ao nosso sistema!</p>
-        <form method="GET" action="{% url 'consultar_agendamentos' %}" style="display: flex; gap: 8px; align-items: center;">
-            <input type="text" name="nome" placeholder="Buscar agendamentos (seu nome)..." required style="flex: 1; padding: 14px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px;">
-            <button type="submit" class="btn-entrar" style="width: auto; margin-bottom: 0; padding: 14px 20px;">🔎 BUSCAR</button>
+        <p>Faça login para ver suas consultas!</p>
+
+        {% if erro %}
+            <div style="color: #FFBDBD; background-color: rgba(211, 47, 47, 0.3); border: 1px solid var(--vermelho); padding: 10px; border-radius: 6px; margin-bottom: 20px; font-size: 14px;">
+                {{ erro }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'home' %}">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px; text-align: left;">
+                <label for="email" style="display: block; margin-bottom: 5px; font-size: 14px; color: var(--cinza-claro);">E-mail</label>
+                <input type="email" name="email" id="email" placeholder="seu@email.com" required style="width: 100%; padding: 12px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 25px; text-align: left;">
+                <label for="senha" style="display: block; margin-bottom: 5px; font-size: 14px; color: var(--cinza-claro);">Senha</label>
+                <input type="password" name="senha" id="senha" placeholder="Sua senha secreta" required style="width: 100%; padding: 12px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px; box-sizing: border-box;">
+            </div>
+            
+            <button type="submit" class="btn-entrar" style="margin-bottom: 15px;">ENTRAR</button>
         </form>
+
+        <a href="{% url 'cadastro_paciente' %}" style="color: var(--cinza-claro); font-size: 14px; text-decoration: none;">Ainda não tem conta? <span style="text-decoration: underline;">Cadastre-se</span></a>
     </div>
 </body>
 </html>
