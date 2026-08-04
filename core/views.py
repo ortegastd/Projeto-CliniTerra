@@ -92,6 +92,7 @@ def limpar_banco_view(request):
     Usuario.objects.all().delete()
     with connection.cursor() as cursor:
         cursor.execute("DELETE FROM sqlite_sequence WHERE name='core_usuario';")
+        cursor.execute("DELETE FROM sqlite_sequence WHERE name='core_consulta';")
     return redirect('lista_clientes')
 
 def gerar_calendario():
