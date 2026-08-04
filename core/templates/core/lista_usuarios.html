@@ -150,8 +150,9 @@
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
-                    <th>Idade (anos)</th>
+                    <th>Idade</th>
                     <th>Telefone</th>
+                    <th>E-mail</th>
                     <th style="text-align: center;">Ações</th>
                 </tr>
             </thead>
@@ -162,6 +163,7 @@
                     <td>{{ usuario.nome }}</td>
                     <td>{{ usuario.idade }}</td>
                     <td>{{ usuario.telefone }}</td>
+                    <td>{{ usuario.email|default:"-" }}</td>
                     <td style="text-align: center;">
                         <a href="{% url 'excluir_usuario' usuario.id_usuario %}" class="btn-excluir" onclick="return confirm('Deseja realmente excluir este cliente?');">❌</a>
                     </td>
