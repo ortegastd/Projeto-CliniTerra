@@ -134,8 +134,9 @@
             Bem-vindo(a), <strong>{{ paciente.nome }}</strong>! Aqui estão as suas consultas agendadas:
         </div>
         
-        <div style="text-align: center; margin-bottom: 30px;">
-            <a href="{% url 'novo_agendamento_paciente' %}" class="btn-buscar" style="display: inline-block; text-decoration: none; padding: 10px 20px;">+ Agendar Nova Consulta</a>
+        <div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            <a href="{% url 'novo_agendamento_paciente' %}" class="btn-buscar" style="display: inline-block; text-decoration: none; padding: 10px 20px; width: auto;">+ Agendar Nova Consulta</a>
+            <a href="{% url 'editar_perfil_paciente' %}" class="btn-buscar" style="display: inline-block; text-decoration: none; padding: 10px 20px; width: auto; background-color: #6D4C41;">⚙️ Editar Meu Perfil</a>
         </div>
 
         {% if consultas %}
@@ -145,6 +146,7 @@
                         <th>Tipo</th>
                         <th>Data</th>
                         <th>Hora</th>
+                        <th style="text-align: center;">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -153,6 +155,10 @@
                         <td>{{ consulta.tipo }}</td>
                         <td>{{ consulta.data|date:"d/m/Y" }}</td>
                         <td>{{ consulta.hora|time:"H:i" }}</td>
+                        <td style="text-align: center;">
+                            <a href="{% url 'editar_agendamento_paciente' consulta.id_consulta %}" style="text-decoration: none; font-size: 16px; margin-right: 10px;" title="Editar">✏️</a>
+                            <a href="{% url 'apagar_agendamento_paciente' consulta.id_consulta %}" style="text-decoration: none; font-size: 16px;" onclick="return confirm('Deseja realmente cancelar este agendamento?');" title="Cancelar">❌</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

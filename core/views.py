@@ -161,3 +161,64 @@ def novo_agendamento_paciente_view(request):
                 print("ERRO AO SALVAR CONSULTA DO PACIENTE:", e)
                 
     return render(request, 'core/agendamento_paciente.html', {'paciente': paciente})
+
+# 9. Editar Agendamento (Paciente)
+def editar_agendamento_paciente_view(request, id_consulta):
+    paciente_id = request.session.get('paciente_id')
+    if not paciente_id:
+        return redirect('home')
+        
+    consulta = get_object_or_404(Consulta, id_consulta=id_consulta, paciente__id_usuario=paciente_id)
+    
+    if request.method == 'POST':
+        tipo = request.POST.get('tipo')
+        data_str = request.POST.get('data')
+        hora_str = request.POST.get('hora')
+        
+        if tipo and data_str and hora_str:
+            consulta.tipo = tipo
+            consulta.data = data_str
+            consulta.hora = hora_str
+            consulta.save()
+            return redirect('consultar_agendamentos')
+            
+    return render(request, 'core/editar_agendamento_paciente.html', {'consulta': consulta})
+
+# 10. Apagar Agendamento (Paciente)
+def apagar_agendamento_paciente_view(request, id_consulta):
+    paciente_id = request.session.get('paciente_id')
+    if not paciente_id:
+        return redirect('home')
+        
+    consulta = get_object_or_404(Consulta, id_consulta=id_consulta, paciente__id_usuario=paciente_id)
+    consulta.delete()
+    return redirect('consultar_agendamentos')
+
+# 11. Editar Perfil (Paciente)
+def editar_perfil_paciente_view(request):
+    paciente_id = request.session.get('paciente_id')
+    if not paciente_id:
+        return redirect('home')
+        
+    paciente = get_object_or_404(Usuario, id_usuario=paciente_id)
+    erro = None
+    
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        telefone = request.POST.get('telefone')
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+        
+        if len(senha) < 8:
+            erro = "A senha deve ter no mínimo 8 caracteres."
+        elif Usuario.objects.filter(email=email).exclude(id_usuario=paciente_id).exists():
+            erro = "Este e-mail já está cadastrado por outra pessoa."
+        else:
+            paciente.nome = nome
+            paciente.telefone = telefone
+            paciente.email = email
+            paciente.senha = senha
+            paciente.save()
+            return redirect('consultar_agendamentos')
+            
+    return render(request, 'core/editar_perfil.html', {'paciente': paciente, 'erro': erro})
