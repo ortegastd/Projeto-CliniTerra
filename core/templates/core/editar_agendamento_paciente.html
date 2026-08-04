@@ -116,7 +116,20 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="tipo">Tipo de Consulta/Exame</label>
-                <input type="text" id="tipo" name="tipo" value="{{ consulta.tipo }}" required>
+                <select id="tipo" name="tipo" required>
+                    <option value="Consulta - Clínica Geral" {% if consulta.tipo == "Consulta - Clínica Geral" %}selected{% endif %}>Consulta - Clínica Geral</option>
+                    <option value="Consulta - Odontologia" {% if consulta.tipo == "Consulta - Odontologia" %}selected{% endif %}>Consulta - Odontologia</option>
+                    <option value="Consulta - Dermatologia" {% if consulta.tipo == "Consulta - Dermatologia" %}selected{% endif %}>Consulta - Dermatologia</option>
+                    <option value="Consulta - Cardiologia" {% if consulta.tipo == "Consulta - Cardiologia" %}selected{% endif %}>Consulta - Cardiologia</option>
+                    <option value="Exame - Ultrassom" {% if consulta.tipo == "Exame - Ultrassom" %}selected{% endif %}>Exame - Ultrassom</option>
+                    <option value="Exame - Raio-X" {% if consulta.tipo == "Exame - Raio-X" %}selected{% endif %}>Exame - Raio-X</option>
+                    <option value="Exame - Sangue/Laboratório" {% if consulta.tipo == "Exame - Sangue/Laboratório" %}selected{% endif %}>Exame - Sangue/Laboratório</option>
+                    <option value="Retorno" {% if consulta.tipo == "Retorno" %}selected{% endif %}>Retorno de Consulta</option>
+                    <!-- Fallback se já houvesse outro valor salvo antes no banco -->
+                    {% if consulta.tipo not in "Consulta - Clínica Geral,Consulta - Odontologia,Consulta - Dermatologia,Consulta - Cardiologia,Exame - Ultrassom,Exame - Raio-X,Exame - Sangue/Laboratório,Retorno" %}
+                        <option value="{{ consulta.tipo }}" selected>{{ consulta.tipo }} (Anterior)</option>
+                    {% endif %}
+                </select>
             </div>
 
             <div class="form-group">

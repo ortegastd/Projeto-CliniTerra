@@ -124,7 +124,17 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="tipo">Tipo de Consulta/Exame</label>
-                <input type="text" id="tipo" name="tipo" placeholder="Ex: Retorno, Checkup, Dentista..." required>
+                <select id="tipo" name="tipo" required>
+                    <option value="" disabled selected>Selecione uma opção...</option>
+                    <option value="Consulta - Clínica Geral">Consulta - Clínica Geral</option>
+                    <option value="Consulta - Odontologia">Consulta - Odontologia</option>
+                    <option value="Consulta - Dermatologia">Consulta - Dermatologia</option>
+                    <option value="Consulta - Cardiologia">Consulta - Cardiologia</option>
+                    <option value="Exame - Ultrassom">Exame - Ultrassom</option>
+                    <option value="Exame - Raio-X">Exame - Raio-X</option>
+                    <option value="Exame - Sangue/Laboratório">Exame - Sangue/Laboratório</option>
+                    <option value="Retorno">Retorno de Consulta</option>
+                </select>
             </div>
 
             <div class="form-group">
