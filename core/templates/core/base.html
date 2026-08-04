@@ -335,7 +335,7 @@
 
     <script>
         // Função para gerar um som sintético de clique Retrô (estilo Win95)
-        function playRetroClick() {
+        function playRetroClick(e) {
             try {
                 window.AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!window.audioCtx) {
@@ -347,22 +347,71 @@
                 const osc = window.audioCtx.createOscillator();
                 const gain = window.audioCtx.createGain();
                 
-                osc.type = 'square';
-                // Queda rápida de frequência para dar o efeito de "thud/click" mecânico
-                osc.frequency.setValueAtTime(600, window.audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(50, window.audioCtx.currentTime + 0.05);
+                let type = 'default';
+                const el = e.currentTarget;
                 
-                // Fade out ultra-rápido
-                gain.gain.setValueAtTime(0.3, window.audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, window.audioCtx.currentTime + 0.05);
-                
+                if (el.matches('input[type="radio"], input[type="checkbox"]')) {
+                    type = 'tick';
+                } else if (el.matches('.win-btn-control')) {
+                    type = 'window_control';
+                } else if (el.matches('a:not(.win-btn)')) {
+                    type = 'link';
+                } else if (el.hasAttribute('onclick') && el.getAttribute('onclick').includes('confirm')) {
+                    type = 'alert';
+                }
+
                 osc.connect(gain);
                 gain.connect(window.audioCtx.destination);
-                
-                osc.start();
-                osc.stop(window.audioCtx.currentTime + 0.05);
-            } catch(e) {
-                console.error("Audio API not supported", e);
+                const now = window.audioCtx.currentTime;
+
+                if (type === 'tick') {
+                    // Tick bem agudo e curto (radio/checkbox)
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(1200, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.02);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.02);
+                    osc.start(now);
+                    osc.stop(now + 0.02);
+                } else if (type === 'link') {
+                    // Clique leve e suave para links de texto
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.03);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+                    osc.start(now);
+                    osc.stop(now + 0.03);
+                } else if (type === 'alert') {
+                    // Som de erro/alerta mais grave e demorado (botões de excluir/apagar)
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.linearRampToValueAtTime(100, now + 0.15);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'window_control') {
+                    // Botões da janela (minimizar, fechar)
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.04);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+                    osc.start(now);
+                    osc.stop(now + 0.04);
+                } else {
+                    // O thud/click clássico para botões normais (win-btn)
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(50, now + 0.05);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                }
+            } catch(err) {
+                console.error("Audio API not supported", err);
             }
         }
 
