@@ -94,28 +94,42 @@ def limpar_banco_view(request):
         cursor.execute("DELETE FROM sqlite_sequence WHERE name='core_usuario';")
     return redirect('lista_clientes')
 
-def gerar_datas_disponiveis(dias=14):
-    from datetime import timedelta
+def gerar_calendario():
+    import calendar
+    from datetime import datetime, timedelta
     hoje = datetime.now().date()
-    datas = []
-    i = 1
-    meses = ["", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
-    while len(datas) < dias:
-        data_futura = hoje + timedelta(days=i)
-        if data_futura.weekday() < 5:
-            datas.append({
-                'iso': data_futura.strftime('%Y-%m-%d'),
-                'dia': f"{data_futura.day:02d}",
-                'mes': meses[data_futura.month]
+    cal = calendar.Calendar(firstweekday=6) # 6 = Domingo
+    semanas = cal.monthdatescalendar(hoje.year, hoje.month)
+    
+    calendario_dados = []
+    for semana in semanas:
+        dias_semana = []
+        for dia in semana:
+            disponivel = False
+            # Disponível se for no futuro, no mesmo mês, e dia de semana (seg a sex)
+            if dia > hoje and dia.month == hoje.month and dia.weekday() < 5:
+                disponivel = True
+            
+            dias_semana.append({
+                'iso': dia.strftime('%Y-%m-%d'),
+                'dia': dia.day,
+                'disponivel': disponivel,
             })
-        i += 1
-    return datas
+        calendario_dados.append(dias_semana)
+        
+    meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+    
+    return {
+        'mes_nome': meses[hoje.month],
+        'ano': hoje.year,
+        'semanas': calendario_dados
+    }
 
 # 6. Agendar Consulta (Recepção)
 def agendar_consulta_view(request):
     sucesso = False
     usuarios = Usuario.objects.all().order_by('nome')
-    datas_disponiveis = gerar_datas_disponiveis()
+    calendario = gerar_calendario()
     
     if request.method == 'POST':
         id_paciente = request.POST.get('paciente')
@@ -159,7 +173,7 @@ def novo_agendamento_paciente_view(request):
         
     paciente = get_object_or_404(Usuario, id_usuario=paciente_id)
     sucesso = False
-    datas_disponiveis = gerar_datas_disponiveis()
+    calendario = gerar_calendario()
     
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
@@ -179,7 +193,7 @@ def novo_agendamento_paciente_view(request):
             except Exception as e:
                 print("ERRO AO SALVAR CONSULTA DO PACIENTE:", e)
                 
-    return render(request, 'core/agendamento_paciente.html', {'paciente': paciente, 'datas_disponiveis': datas_disponiveis})
+    return render(request, 'core/agendamento_paciente.html', {'paciente': paciente, 'calendario': calendario})
 
 # 9. Editar Agendamento (Paciente)
 def editar_agendamento_paciente_view(request, id_consulta):
@@ -188,7 +202,7 @@ def editar_agendamento_paciente_view(request, id_consulta):
         return redirect('home')
         
     consulta = get_object_or_404(Consulta, id_consulta=id_consulta, paciente__id_usuario=paciente_id)
-    datas_disponiveis = gerar_datas_disponiveis()
+    calendario = gerar_calendario()
     
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
@@ -202,7 +216,7 @@ def editar_agendamento_paciente_view(request, id_consulta):
             consulta.save()
             return redirect('consultar_agendamentos')
             
-    return render(request, 'core/editar_agendamento_paciente.html', {'consulta': consulta, 'datas_disponiveis': datas_disponiveis})
+    return render(request, 'core/editar_agendamento_paciente.html', {'consulta': consulta, 'calendario': calendario})
 
 # 10. Apagar Agendamento (Paciente)
 def apagar_agendamento_paciente_view(request, id_consulta):

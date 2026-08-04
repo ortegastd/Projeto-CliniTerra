@@ -62,53 +62,63 @@
             box-sizing: border-box;
         }
 
-        .datas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
+        .calendar-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
             margin-bottom: 20px;
         }
-
-        .data-card {
-            background-color: var(--marrom-escuro);
-            border: 1px solid rgba(211, 211, 211, 0.4);
-            border-radius: 8px;
-            padding: 10px 5px;
+        .calendar-header {
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--branco);
+            text-transform: capitalize;
         }
-
-        .data-card:hover {
-            border-color: var(--marrom-claro);
-            background-color: rgba(140, 57, 26, 0.2);
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 12px;
+            color: var(--cinza-claro);
+            margin-bottom: 5px;
         }
-
-        .data-card input[type="radio"] {
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .day-card {
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .day-card input[type="radio"] {
             display: none;
         }
-
-        .data-card input[type="radio"]:checked + .data-content {
+        .day-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 32px;
+            margin: 0 auto;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
             color: var(--branco);
+            transition: all 0.2s;
         }
-        
-        .data-card:has(input[type="radio"]:checked) {
+        .day-label.disabled {
+            color: rgba(255, 255, 255, 0.2);
+            cursor: not-allowed;
+        }
+        .day-card input[type="radio"]:checked + .day-label {
             background-color: var(--marrom-claro);
-            border-color: var(--marrom-claro);
-        }
-
-        .data-dia {
-            font-size: 20px;
             font-weight: bold;
-            display: block;
         }
-
-        .data-mes {
-            font-size: 12px;
-            text-transform: uppercase;
+        .day-label:not(.disabled):hover {
+            background-color: rgba(140, 57, 26, 0.5);
         }
 
         /* Hack to make time picker look good in some browsers */
@@ -182,16 +192,25 @@
 
             <div class="form-group">
                 <label>Data</label>
-                <div class="datas-grid">
-                    {% for data in datas_disponiveis %}
-                    <label class="data-card">
-                        <input type="radio" name="data" value="{{ data.iso }}" {% if consulta.data|date:'Y-m-d' == data.iso %}checked{% endif %} required>
-                        <div class="data-content">
-                            <span class="data-dia">{{ data.dia }}</span>
-                            <span class="data-mes">{{ data.mes }}</span>
-                        </div>
-                    </label>
-                    {% endfor %}
+                <div class="calendar-container">
+                    <div class="calendar-header">{{ calendario.mes_nome }} {{ calendario.ano }}</div>
+                    <div class="calendar-weekdays">
+                        <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div><div>QUI</div><div>SEX</div><div>SÁB</div>
+                    </div>
+                    <div class="calendar-days">
+                        {% for semana in calendario.semanas %}
+                            {% for dia in semana %}
+                                <label class="day-card">
+                                    {% if dia.disponivel or consulta.data|date:'Y-m-d' == dia.iso %}
+                                        <input type="radio" name="data" value="{{ dia.iso }}" {% if consulta.data|date:'Y-m-d' == dia.iso %}checked{% endif %} required>
+                                        <span class="day-label">{{ dia.dia }}</span>
+                                    {% else %}
+                                        <span class="day-label disabled">{{ dia.dia }}</span>
+                                    {% endif %}
+                                </label>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 

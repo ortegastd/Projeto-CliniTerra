@@ -211,16 +211,25 @@
 
             <div class="form-group">
                 <label>Data</label>
-                <div class="datas-grid">
-                    {% for data in datas_disponiveis %}
-                    <label class="data-card">
-                        <input type="radio" name="data" value="{{ data.iso }}" required>
-                        <div class="data-content">
-                            <span class="data-dia">{{ data.dia }}</span>
-                            <span class="data-mes">{{ data.mes }}</span>
-                        </div>
-                    </label>
-                    {% endfor %}
+                <div class="calendar-container">
+                    <div class="calendar-header">{{ calendario.mes_nome }} {{ calendario.ano }}</div>
+                    <div class="calendar-weekdays">
+                        <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div><div>QUI</div><div>SEX</div><div>SÁB</div>
+                    </div>
+                    <div class="calendar-days">
+                        {% for semana in calendario.semanas %}
+                            {% for dia in semana %}
+                                <label class="day-card">
+                                    {% if dia.disponivel %}
+                                        <input type="radio" name="data" value="{{ dia.iso }}" required>
+                                        <span class="day-label">{{ dia.dia }}</span>
+                                    {% else %}
+                                        <span class="day-label disabled">{{ dia.dia }}</span>
+                                    {% endif %}
+                                </label>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 
