@@ -300,19 +300,12 @@
         a:hover {
             color: var(--win-light-blue);
         }
-
-            {
-            % block extra_css %
-        }
-
-            {
-            % endblock %
-        }
     </style>
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
-    <div class="win-window" style="{% block window_style %}{% endblock %}">
+    <div class="win-window" {% block window_attrs %}{% endblock %}>
         <div class="win-titlebar">
             <div class="win-titlebar-icon">
                 {% block titlebar_icon %}💾{% endblock %}
@@ -340,6 +333,47 @@
         </div>
     </div>
 
+    <script>
+        // Função para gerar um som sintético de clique Retrô (estilo Win95)
+        function playRetroClick() {
+            try {
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!window.audioCtx) {
+                    window.audioCtx = new AudioContext();
+                }
+                if (window.audioCtx.state === 'suspended') {
+                    window.audioCtx.resume();
+                }
+                const osc = window.audioCtx.createOscillator();
+                const gain = window.audioCtx.createGain();
+                
+                osc.type = 'square';
+                // Queda rápida de frequência para dar o efeito de "thud/click" mecânico
+                osc.frequency.setValueAtTime(600, window.audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(50, window.audioCtx.currentTime + 0.05);
+                
+                // Fade out ultra-rápido
+                gain.gain.setValueAtTime(0.3, window.audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, window.audioCtx.currentTime + 0.05);
+                
+                osc.connect(gain);
+                gain.connect(window.audioCtx.destination);
+                
+                osc.start();
+                osc.stop(window.audioCtx.currentTime + 0.05);
+            } catch(e) {
+                console.error("Audio API not supported", e);
+            }
+        }
+
+        // Adiciona o som a todos os botões e inputs interativos
+        document.addEventListener('DOMContentLoaded', () => {
+            const clickableElements = document.querySelectorAll('.win-btn, .win-btn-control, input[type="radio"], input[type="checkbox"], a');
+            clickableElements.forEach(el => {
+                el.addEventListener('mousedown', playRetroClick);
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 
