@@ -90,7 +90,12 @@
     <div class="card-home">
         <h1>Projeto CliniTerra</h1>
         <p>Seja bem-vindo ao nosso sistema!</p>
-        <a href="{% url 'cadastro' %}" class="btn-entrar">REALIZAR CADASTRO</a>
+        <a href="{% url 'cadastro' %}" class="btn-entrar" style="margin-bottom: 10px;">CADASTRAR PACIENTE</a>
+        <a href="{% url 'agendar_consulta' %}" class="btn-entrar" style="margin-bottom: 10px;">AGENDAR CONSULTA</a>
+        <form method="GET" action="{% url 'consultar_agendamentos' %}" style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" name="nome" placeholder="Buscar agendamentos (seu nome)..." required style="flex: 1; padding: 14px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px;">
+            <button type="submit" class="btn-entrar" style="width: auto; margin-bottom: 0; padding: 14px 20px;">🔎 BUSCAR</button>
+        </form>
     </div>
 </body>
 </html>
