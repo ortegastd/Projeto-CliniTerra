@@ -334,7 +334,7 @@
     </div>
 
     <script>
-        // Função para gerar um som sintético de clique Retrô (estilo Win95)
+        // Função para gerar sons sintéticos estilo Win95/Retro
         function playRetroClick(e) {
             try {
                 window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -349,15 +349,20 @@
                 
                 let type = 'default';
                 const el = e.currentTarget;
+                const text = (el.innerText || el.value || '').toLowerCase();
                 
                 if (el.matches('input[type="radio"], input[type="checkbox"]')) {
                     type = 'tick';
                 } else if (el.matches('.win-btn-control')) {
                     type = 'window_control';
+                } else if (el.hasAttribute('onclick') && el.getAttribute('onclick').includes('confirm') || text.includes('apagar') || text.includes('excluir')) {
+                    type = 'alert';
+                } else if (text.includes('cadastrar') || text.includes('salvar') || text.includes('agendar')) {
+                    type = 'success';
+                } else if (text.includes('cancelar') || text.includes('voltar') || text.includes('sair')) {
+                    type = 'cancel';
                 } else if (el.matches('a:not(.win-btn)')) {
                     type = 'link';
-                } else if (el.hasAttribute('onclick') && el.getAttribute('onclick').includes('confirm')) {
-                    type = 'alert';
                 }
 
                 osc.connect(gain);
@@ -365,7 +370,6 @@
                 const now = window.audioCtx.currentTime;
 
                 if (type === 'tick') {
-                    // Tick bem agudo e curto (radio/checkbox)
                     osc.type = 'square';
                     osc.frequency.setValueAtTime(1200, now);
                     osc.frequency.exponentialRampToValueAtTime(800, now + 0.02);
@@ -374,25 +378,41 @@
                     osc.start(now);
                     osc.stop(now + 0.02);
                 } else if (type === 'link') {
-                    // Clique leve e suave para links de texto
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(800, now);
                     osc.frequency.exponentialRampToValueAtTime(300, now + 0.03);
-                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.setValueAtTime(0.15, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
                     osc.start(now);
                     osc.stop(now + 0.03);
                 } else if (type === 'alert') {
-                    // Som de erro/alerta mais grave e demorado (botões de excluir/apagar)
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(150, now);
-                    osc.frequency.linearRampToValueAtTime(100, now + 0.15);
+                    osc.frequency.linearRampToValueAtTime(90, now + 0.2);
                     gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'success') {
+                    // Som alegre subindo (como se fosse de confirmação)
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.setValueAtTime(600, now + 0.05);
+                    osc.frequency.setValueAtTime(800, now + 0.1);
+                    gain.gain.setValueAtTime(0.2, now);
                     gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
                     osc.start(now);
                     osc.stop(now + 0.15);
+                } else if (type === 'cancel') {
+                    // Som descendo (cancelamento)
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
                 } else if (type === 'window_control') {
-                    // Botões da janela (minimizar, fechar)
                     osc.type = 'square';
                     osc.frequency.setValueAtTime(400, now);
                     osc.frequency.exponentialRampToValueAtTime(100, now + 0.04);
@@ -401,10 +421,11 @@
                     osc.start(now);
                     osc.stop(now + 0.04);
                 } else {
-                    // O thud/click clássico para botões normais (win-btn)
+                    // O thud/click clássico com pequenas variações aleatórias para não ficar repetitivo
+                    const baseFreq = 500 + Math.random() * 200;
                     osc.type = 'square';
-                    osc.frequency.setValueAtTime(600, now);
-                    osc.frequency.exponentialRampToValueAtTime(50, now + 0.05);
+                    osc.frequency.setValueAtTime(baseFreq, now);
+                    osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.1, now + 0.05);
                     gain.gain.setValueAtTime(0.3, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
                     osc.start(now);
@@ -415,7 +436,6 @@
             }
         }
 
-        // Adiciona o som a todos os botões e inputs interativos
         document.addEventListener('DOMContentLoaded', () => {
             const clickableElements = document.querySelectorAll('.win-btn, .win-btn-control, input[type="radio"], input[type="checkbox"], a');
             clickableElements.forEach(el => {
