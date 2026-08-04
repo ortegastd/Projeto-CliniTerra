@@ -62,8 +62,56 @@
             box-sizing: border-box;
         }
 
-        /* Hack to make date/time pickers look good in some browsers */
-        input[type="date"]::-webkit-calendar-picker-indicator,
+        .datas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .data-card {
+            background-color: var(--marrom-escuro);
+            border: 1px solid rgba(211, 211, 211, 0.4);
+            border-radius: 8px;
+            padding: 10px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .data-card:hover {
+            border-color: var(--marrom-claro);
+            background-color: rgba(140, 57, 26, 0.2);
+        }
+
+        .data-card input[type="radio"] {
+            display: none;
+        }
+
+        .data-card input[type="radio"]:checked + .data-content {
+            color: var(--branco);
+        }
+        
+        .data-card:has(input[type="radio"]:checked) {
+            background-color: var(--marrom-claro);
+            border-color: var(--marrom-claro);
+        }
+
+        .data-dia {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .data-mes {
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        /* Hack to make time picker look good in some browsers */
         input[type="time"]::-webkit-calendar-picker-indicator {
             filter: invert(1);
         }
@@ -138,8 +186,18 @@
             </div>
 
             <div class="form-group">
-                <label for="data">Data Desejada</label>
-                <input type="date" id="data" name="data" required>
+                <label>Data Desejada</label>
+                <div class="datas-grid">
+                    {% for data in datas_disponiveis %}
+                    <label class="data-card">
+                        <input type="radio" name="data" value="{{ data.iso }}" required>
+                        <div class="data-content">
+                            <span class="data-dia">{{ data.dia }}</span>
+                            <span class="data-mes">{{ data.mes }}</span>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
             </div>
 
             <div class="form-group">

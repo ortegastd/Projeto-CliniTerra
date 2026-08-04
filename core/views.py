@@ -94,10 +94,28 @@ def limpar_banco_view(request):
         cursor.execute("DELETE FROM sqlite_sequence WHERE name='core_usuario';")
     return redirect('lista_clientes')
 
+def gerar_datas_disponiveis(dias=14):
+    from datetime import timedelta
+    hoje = datetime.now().date()
+    datas = []
+    i = 1
+    meses = ["", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+    while len(datas) < dias:
+        data_futura = hoje + timedelta(days=i)
+        if data_futura.weekday() < 5:
+            datas.append({
+                'iso': data_futura.strftime('%Y-%m-%d'),
+                'dia': f"{data_futura.day:02d}",
+                'mes': meses[data_futura.month]
+            })
+        i += 1
+    return datas
+
 # 6. Agendar Consulta (Recepção)
 def agendar_consulta_view(request):
     sucesso = False
     usuarios = Usuario.objects.all().order_by('nome')
+    datas_disponiveis = gerar_datas_disponiveis()
     
     if request.method == 'POST':
         id_paciente = request.POST.get('paciente')
@@ -118,7 +136,7 @@ def agendar_consulta_view(request):
             except Exception as e:
                 print("ERRO AO SALVAR CONSULTA:", e)
                 
-    return render(request, 'core/agendar_consulta.html', {'usuarios': usuarios, 'sucesso': sucesso})
+    return render(request, 'core/agendar_consulta.html', {'usuarios': usuarios, 'sucesso': sucesso, 'datas_disponiveis': datas_disponiveis})
 
 # 7. Consultar Agendamentos (Painel do Paciente)
 def consultar_agendamentos_view(request):
@@ -141,6 +159,7 @@ def novo_agendamento_paciente_view(request):
         
     paciente = get_object_or_404(Usuario, id_usuario=paciente_id)
     sucesso = False
+    datas_disponiveis = gerar_datas_disponiveis()
     
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
@@ -160,7 +179,7 @@ def novo_agendamento_paciente_view(request):
             except Exception as e:
                 print("ERRO AO SALVAR CONSULTA DO PACIENTE:", e)
                 
-    return render(request, 'core/agendamento_paciente.html', {'paciente': paciente})
+    return render(request, 'core/agendamento_paciente.html', {'paciente': paciente, 'datas_disponiveis': datas_disponiveis})
 
 # 9. Editar Agendamento (Paciente)
 def editar_agendamento_paciente_view(request, id_consulta):
@@ -169,6 +188,7 @@ def editar_agendamento_paciente_view(request, id_consulta):
         return redirect('home')
         
     consulta = get_object_or_404(Consulta, id_consulta=id_consulta, paciente__id_usuario=paciente_id)
+    datas_disponiveis = gerar_datas_disponiveis()
     
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
@@ -182,7 +202,7 @@ def editar_agendamento_paciente_view(request, id_consulta):
             consulta.save()
             return redirect('consultar_agendamentos')
             
-    return render(request, 'core/editar_agendamento_paciente.html', {'consulta': consulta})
+    return render(request, 'core/editar_agendamento_paciente.html', {'consulta': consulta, 'datas_disponiveis': datas_disponiveis})
 
 # 10. Apagar Agendamento (Paciente)
 def apagar_agendamento_paciente_view(request, id_consulta):
