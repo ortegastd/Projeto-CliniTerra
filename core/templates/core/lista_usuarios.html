@@ -160,12 +160,26 @@
                 {% for usuario in usuarios %}
                 <tr>
                     <td>{{ usuario.id_usuario }}</td>
-                    <td>{{ usuario.nome }}</td>
-                    <td>{{ usuario.idade }}</td>
-                    <td>{{ usuario.telefone }}</td>
-                    <td>{{ usuario.email|default:"-" }}</td>
-                    <td style="text-align: center;">
-                        <a href="{% url 'excluir_usuario' usuario.id_usuario %}" class="btn-excluir" onclick="return confirm('Deseja realmente excluir este cliente?');">❌</a>
+                    <td>
+                        <div style="font-weight: bold; margin-bottom: 5px;">{{ usuario.nome }}</div>
+                        {% if usuario.consulta_set.all %}
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                            {% for consulta in usuario.consulta_set.all|dictsort:"data" %}
+                                <div style="font-size: 11px; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: var(--cinza-claro);">
+                                    🗓️ {{ consulta.data|date:"d/m/Y" }} às {{ consulta.hora|stringformat:"s"|slice:":5" }} <br>
+                                    <span style="color: var(--branco);">{{ consulta.tipo }}</span>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        {% else %}
+                            <div style="font-size: 11px; color: rgba(211,211,211,0.5);">Sem agendamentos</div>
+                        {% endif %}
+                    </td>
+                    <td style="vertical-align: top;">{{ usuario.idade }}</td>
+                    <td style="vertical-align: top;">{{ usuario.telefone }}</td>
+                    <td style="vertical-align: top;">{{ usuario.email|default:"-" }}</td>
+                    <td style="text-align: center; vertical-align: top;">
+                        <a href="{% url 'excluir_usuario' usuario.id_usuario %}" class="btn-excluir" onclick="return confirm('Deseja realmente excluir este paciente e todos os seus agendamentos?');">❌</a>
                     </td>
                 </tr>
                 {% empty %}
