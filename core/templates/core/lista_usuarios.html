@@ -1,199 +1,79 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banco de Dados Cadastrais - Projeto CliniTerra</title>
-    <style>
-        :root {
-            --marrom-escuro: #3E2723;
-            --marrom-claro: #8C391A;
-            --cinza-claro: #D3D3D3;
-            --branco: #FFFFFF;
-            --vermelho: #D32F2F;
-        }
+{% extends 'core/base.html' %}
 
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #973F2D 0%, #532A1B 100%);
-            background-attachment: fixed;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+{% block title %}CliniTerra - Database{% endblock %}
 
-        .card-lista {
-            background-color: var(--marrom-escuro);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 700px; 
-            color: var(--branco);
-            text-align: center;
-            position: relative;
-        }
+{% block titlebar_icon %}🛢️{% endblock %}
+{% block titlebar_text %}Database.exe{% endblock %}
 
-        .link-voltar-painel {
-            display: inline-block;
-            color: var(--cinza-claro);
-            text-decoration: none;
-            font-size: 14px;
-            margin-bottom: 15px;
-            transition: color 0.3s;
-        }
+{% block window_style %}max-width: 800px;{% endblock %}
 
-        .link-voltar-painel:hover {
-            color: var(--branco);
-            text-decoration: underline;
-        }
+{% block menu_bar %}
+<div style="border-bottom: 1px solid var(--win-darkgray); padding-bottom: 4px; margin-bottom: 10px; font-size: 18px;">
+    <u>F</u>ile &nbsp;&nbsp; <a href="{% url 'cadastro' %}" style="text-decoration: none; color: inherit;"><u>N</u>ew Patient</a> &nbsp;&nbsp; <a href="{% url 'home' %}" style="text-decoration: none; color: inherit;">E<u>x</u>it</a> &nbsp;&nbsp; <u>H</u>elp
+</div>
+{% endblock %}
 
-        h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            color: var(--cinza-claro);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(211, 211, 211, 0.2);
-            font-size: 14px;
-        }
-
-        th {
-            color: var(--cinza-claro);
-            font-weight: bold;
-        }
-
-        td {
-            color: var(--branco);
-        }
-
-        .btn-excluir {
-            color: var(--vermelho);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-
-        .btn-excluir:hover {
-            background-color: rgba(211, 47, 47, 0.2);
-        }
-
-        .btn-limpar-tudo {
-            display: inline-block;
-            width: 100%;
-            padding: 12px;
-            background-color: transparent;
-            color: var(--vermelho);
-            border: 1px solid var(--vermelho);
-            border-radius: 6px;
-            font-weight: bold;
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: all 0.3s;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .btn-limpar-tudo:hover {
-            background-color: var(--vermelho);
-            color: var(--branco);
-        }
-
-        .btn-admin {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--marrom-claro);
-            color: var(--branco);
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 14px;
-            margin: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .btn-admin:hover {
-            background-color: #BCAAA4;
-            color: var(--marrom-escuro);
-        }
-    </style>
-</head>
-<body>
-    <div class="card-lista">
-        <a href="{% url 'home' %}" class="link-voltar-painel">← Sair do Painel Administrativo</a>
-
+{% block content %}
+    <div style="margin-bottom: 15px;">
         <h2>Painel Administrativo</h2>
-        
-        <div style="margin-bottom: 30px;">
-            <a href="{% url 'cadastro' %}" class="btn-admin">📝 CADASTRAR PACIENTE</a>
-        </div>
-
-        <h3 style="color: var(--cinza-claro); text-align: left; margin-bottom: 15px; border-bottom: 1px solid rgba(211,211,211,0.2); padding-bottom: 10px;">Banco de Dados Cadastrais</h3>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Idade</th>
-                    <th>Telefone</th>
-                    <th>E-mail</th>
-                    <th style="text-align: center;">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.id_usuario }}</td>
-                    <td>
-                        <div style="font-weight: bold; margin-bottom: 5px;">{{ usuario.nome }}</div>
-                        {% if usuario.consulta_set.all %}
-                            <div style="display: flex; flex-direction: column; gap: 4px;">
-                            {% for consulta in usuario.consulta_set.all|dictsort:"data" %}
-                                <div style="font-size: 11px; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: var(--cinza-claro);">
-                                    🗓️ {{ consulta.data|date:"d/m/Y" }} às {{ consulta.hora|stringformat:"s"|slice:":5" }} <br>
-                                    <span style="color: var(--branco);">{{ consulta.tipo }}</span>
-                                </div>
-                            {% endfor %}
-                            </div>
-                        {% else %}
-                            <div style="font-size: 11px; color: rgba(211,211,211,0.5);">Sem agendamentos</div>
-                        {% endif %}
-                    </td>
-                    <td style="vertical-align: top;">{{ usuario.idade }}</td>
-                    <td style="vertical-align: top;">{{ usuario.telefone }}</td>
-                    <td style="vertical-align: top;">{{ usuario.email|default:"-" }}</td>
-                    <td style="text-align: center; vertical-align: top;">
-                        <a href="{% url 'excluir_usuario' usuario.id_usuario %}" class="btn-excluir" onclick="return confirm('Deseja realmente excluir este paciente e todos os seus agendamentos?');">❌</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" style="text-align: center; color: var(--cinza-claro);">
-                        Nenhum registro encontrado no banco de dados.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        {% if usuarios %}
-            <a href="{% url 'limpar_banco' %}" class="btn-limpar-tudo" onclick="return confirm('Tem certeza que deseja apagar TODOS os clientes do banco de dados?');">⚠️ APAGAR TODOS OS REGISTROS</a>
-        {% endif %}
+        <p>Banco de Dados Cadastrais e Agendamentos</p>
     </div>
-</body>
-</html>
+
+    <div style="margin-bottom: 15px;">
+        <a href="{% url 'cadastro' %}" class="win-btn">Novo Paciente</a>
+        <a href="{% url 'agendar_consulta' %}" class="win-btn">Agendar Consulta</a>
+    </div>
+
+    <table class="win-table" style="font-size: 14px;">
+        <thead>
+            <tr>
+                <th style="width: 40px;">ID</th>
+                <th>Nome / Agendamentos</th>
+                <th style="width: 60px;">Idade</th>
+                <th style="width: 120px;">Telefone</th>
+                <th>E-mail</th>
+                <th style="width: 50px; text-align: center;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr style="background-color: var(--win-white);">
+                <td style="vertical-align: top;">{{ usuario.id_usuario }}</td>
+                <td style="vertical-align: top;">
+                    <div style="font-weight: bold; margin-bottom: 5px;">{{ usuario.nome }}</div>
+                    {% if usuario.consulta_set.all %}
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                        {% for consulta in usuario.consulta_set.all|dictsort:"data" %}
+                            <div style="background: var(--win-gray); padding: 2px 4px; border: 1px solid var(--win-darkgray); font-size: 12px;">
+                                📅 {{ consulta.data|date:"d/m/Y" }} às {{ consulta.hora|stringformat:"s"|slice:":5" }} <br>
+                                {{ consulta.tipo }}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <div style="font-size: 12px; color: var(--win-darkgray);">Sem agendamentos</div>
+                    {% endif %}
+                </td>
+                <td style="vertical-align: top;">{{ usuario.idade }}</td>
+                <td style="vertical-align: top;">{{ usuario.telefone }}</td>
+                <td style="vertical-align: top;">{{ usuario.email|default:"-" }}</td>
+                <td style="text-align: center; vertical-align: top;">
+                    <a href="{% url 'excluir_usuario' usuario.id_usuario %}" class="win-btn" style="padding: 2px 6px; font-size: 12px;" onclick="return confirm('Excluir paciente e todos os seus agendamentos?');" title="Excluir">X</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--win-darkgray); padding: 20px;">
+                    Nenhum registro encontrado no banco de dados.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if usuarios %}
+        <div style="margin-top: 20px; text-align: right;">
+            <a href="{% url 'limpar_banco' %}" class="win-btn" style="color: red;" onclick="return confirm('⚠️ Tem certeza que deseja apagar TODOS os clientes do banco de dados?');">FORMAT C: (Apagar Tudo)</a>
+        </div>
+    {% endif %}
+{% endblock %}

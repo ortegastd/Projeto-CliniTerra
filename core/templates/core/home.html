@@ -1,141 +1,58 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vindo - Projeto CliniTerra</title>
-    <style>
-        :root {
-            --marrom-escuro: #3E2723;
-            --marrom-claro: #8C391A;
-            --cinza-claro: #D3D3D3;
-            --branco: #FFFFFF;
-        }
+{% extends 'core/base.html' %}
 
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #973F2D 0%, #532A1B 100%);
-            background-attachment: fixed;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
+{% block title %}CliniTerra Login{% endblock %}
 
-        /* ÍCONE DISFARÇADO DO BANCO DE DADOS (SÓ PARA TESTES) */
-        .acesso-secreto {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            text-decoration: none;
-            font-size: 16px;
-            opacity: 0.2;
-        }
+{% block titlebar_icon %}🔑{% endblock %}
+{% block titlebar_text %}Login.exe{% endblock %}
 
-        .acesso-secreto:hover {
-            opacity: 1.0;
-        }
+{% block window_style %}max-width: 400px;{% endblock %}
 
-        .card-home {
-            background-color: var(--marrom-escuro);
-            padding: 50px 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 450px; 
-            color: var(--branco);
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: var(--branco);
-        }
-
-        p {
-            color: var(--cinza-claro);
-            font-size: 16px;
-            margin-bottom: 35px;
-        }
-
-        .btn-entrar {
-            display: inline-block;
-            width: 100%;
-            padding: 14px;
-            background-color: var(--marrom-claro);
-            color: var(--branco);
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .btn-entrar:hover {
-            background-color: #BCAAA4;
-            color: var(--marrom-escuro);
-            transform: scale(1.02);
-        }
-    </style>
-</head>
-<body>
-
-    <a href="{% url 'lista_clientes' %}" class="acesso-secreto" title="Acesso Administrativo">🛢️</a>
-
-    <div class="card-home">
-        <h1>Projeto CliniTerra</h1>
-        <p>Faça login para ver suas consultas!</p>
-
-        {% if erro %}
-            <div style="color: #FFBDBD; background-color: rgba(211, 47, 47, 0.3); border: 1px solid var(--vermelho); padding: 10px; border-radius: 6px; margin-bottom: 20px; font-size: 14px;">
-                {{ erro }}
-            </div>
-        {% endif %}
-
-        <form method="POST" action="{% url 'home' %}">
-            {% csrf_token %}
-            <div style="margin-bottom: 15px; text-align: left;">
-                <label for="email" style="display: block; margin-bottom: 5px; font-size: 14px; color: var(--cinza-claro);">E-mail</label>
-                <input type="email" name="email" id="email" placeholder="seu@email.com" required style="width: 100%; padding: 12px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 25px; text-align: left;">
-                <label for="senha" style="display: block; margin-bottom: 5px; font-size: 14px; color: var(--cinza-claro);">Senha</label>
-                <div style="position: relative;">
-                    <input type="password" name="senha" id="senha" placeholder="Sua senha secreta" required style="width: 100%; padding: 12px; padding-right: 40px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px; box-sizing: border-box;">
-                    <span id="toggleSenha" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; user-select: none; display: flex; align-items: center;" title="Mostrar/Ocultar Senha">
-                        <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cinza-claro)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                        <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cinza-claro)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>
-                        </svg>
-                    </span>
-                </div>
-            </div>
-            
-            <button type="submit" class="btn-entrar" style="margin-bottom: 15px;">ENTRAR</button>
-        </form>
-
-        <a href="{% url 'cadastro_paciente' %}" style="color: var(--cinza-claro); font-size: 14px; text-decoration: none;">Ainda não tem conta? <span style="text-decoration: underline;">Cadastre-se</span></a>
+{% block content %}
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h2>Acesso ao Sistema</h2>
+        <p>Faça login para ver suas consultas.</p>
     </div>
 
-    <script>
-        const toggleSenha = document.getElementById('toggleSenha');
-        const senhaInput = document.getElementById('senha');
-        const eyeOpen = document.getElementById('eye-open');
-        const eyeClosed = document.getElementById('eye-closed');
+    {% if erro %}
+        <div class="win-alert win-alert-error">
+            <span>{{ erro }}</span>
+        </div>
+    {% endif %}
 
-        toggleSenha.addEventListener('click', function () {
-            const isPassword = senhaInput.getAttribute('type') === 'password';
-            senhaInput.setAttribute('type', isPassword ? 'text' : 'password');
-            eyeOpen.style.display = isPassword ? 'none' : 'block';
-            eyeClosed.style.display = isPassword ? 'block' : 'none';
-        });
-    </script>
-</body>
-</html>
+    <form method="POST" action="{% url 'home' %}">
+        {% csrf_token %}
+        <div style="margin-bottom: 10px;">
+            <label for="email" style="display: block; margin-bottom: 5px;">E-mail:</label>
+            <input type="email" name="email" id="email" class="win-input" placeholder="seu@email.com" required>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label for="senha" style="display: block; margin-bottom: 5px;">Senha:</label>
+            <div style="display: flex; gap: 5px;">
+                <input type="password" name="senha" id="senha" class="win-input" style="margin-bottom: 0;" required>
+                <button type="button" class="win-btn" id="toggleSenha" style="padding: 4px 8px; font-size: 14px;" title="Mostrar Senha">👁️</button>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="submit" class="win-btn" style="flex: 1;">OK</button>
+            <a href="{% url 'cadastro_paciente' %}" class="win-btn" style="flex: 1; text-align: center;">Cadastrar</a>
+        </div>
+    </form>
+
+    <div style="text-align: right; margin-top: 15px;">
+        <a href="{% url 'lista_clientes' %}" style="text-decoration: none;" title="Acesso Administrativo">
+            🛢️
+        </a>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const toggleSenha = document.getElementById('toggleSenha');
+    const senhaInput = document.getElementById('senha');
+    toggleSenha.addEventListener('click', function () {
+        const isPassword = senhaInput.getAttribute('type') === 'password';
+        senhaInput.setAttribute('type', isPassword ? 'text' : 'password');
+    });
+</script>
+{% endblock %}

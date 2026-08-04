@@ -1,174 +1,59 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultar Agendamentos - Projeto CliniTerra</title>
-    <style>
-        :root {
-            --marrom-escuro: #3E2723;
-            --marrom-claro: #8C391A;
-            --cinza-claro: #D3D3D3;
-            --branco: #FFFFFF;
-            --marrom-fundo: #5D4037;
-        }
+{% extends 'core/base.html' %}
 
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #973F2D 0%, #532A1B 100%);
-            background-attachment: fixed;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+{% block title %}CliniTerra - Meu Painel{% endblock %}
 
-        .container {
-            width: 90%;
-            max-width: 800px;
-            background-color: var(--marrom-escuro);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            color: var(--branco);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+{% block titlebar_icon %}🗂️{% endblock %}
+{% block titlebar_text %}Dashboard.exe{% endblock %}
 
-        h2 {
-            text-align: center;
-            color: var(--cinza-claro);
-            margin-bottom: 20px;
-        }
+{% block window_style %}max-width: 600px;{% endblock %}
 
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .search-box input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid rgba(211, 211, 211, 0.4);
-            border-radius: 6px;
-            background-color: transparent;
-            color: var(--branco);
-            font-size: 14px;
-        }
+{% block menu_bar %}
+<div style="border-bottom: 1px solid var(--win-darkgray); padding-bottom: 4px; margin-bottom: 10px; font-size: 18px;">
+    <u>F</u>ile &nbsp;&nbsp; <a href="{% url 'editar_perfil_paciente' %}" style="text-decoration: none; color: inherit;"><u>E</u>dit Profile</a> &nbsp;&nbsp; <a href="{% url 'sair' %}" style="text-decoration: none; color: inherit;">E<u>x</u>it</a> &nbsp;&nbsp; <u>H</u>elp
+</div>
+{% endblock %}
 
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--marrom-claro);
-        }
-
-        .btn-buscar {
-            padding: 12px 24px;
-            background-color: var(--marrom-claro);
-            color: var(--branco);
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn-buscar:hover {
-            background-color: #BCAAA4;
-            color: var(--marrom-escuro);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        th {
-            background-color: var(--marrom-fundo);
-            color: var(--cinza-claro);
-            font-weight: bold;
-        }
-
-        tr:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        
-        .empty-message {
-            text-align: center;
-            color: var(--cinza-claro);
-            padding: 20px;
-            font-style: italic;
-        }
-
-        .actions {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .btn-voltar {
-            color: var(--cinza-claro);
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-
-        .btn-voltar:hover {
-            color: var(--branco);
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
+{% block content %}
+    <div style="margin-bottom: 20px;">
         <h2>Meu Painel</h2>
-        
-        <div style="margin-bottom: 20px; text-align: center; color: var(--cinza-claro);">
-            Bem-vindo(a), <strong>{{ paciente.nome }}</strong>! Aqui estão as suas consultas agendadas:
-        </div>
-        
-        <div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-            <a href="{% url 'novo_agendamento_paciente' %}" class="btn-buscar" style="display: inline-block; text-decoration: none; padding: 10px 20px; width: auto;">+ Agendar Nova Consulta</a>
-        </div>
-
-        {% if consultas %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Data</th>
-                        <th>Hora</th>
-                        <th style="text-align: center;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for consulta in consultas %}
-                    <tr>
-                        <td>{{ consulta.tipo }}</td>
-                        <td>{{ consulta.data|date:"d/m/Y" }}</td>
-                        <td>{{ consulta.hora|time:"H:i" }}</td>
-                        <td style="text-align: center;">
-                            <a href="{% url 'editar_agendamento_paciente' consulta.id_consulta %}" style="text-decoration: none; font-size: 16px; margin-right: 10px;" title="Editar">✏️</a>
-                            <a href="{% url 'apagar_agendamento_paciente' consulta.id_consulta %}" style="text-decoration: none; font-size: 16px;" onclick="return confirm('Deseja realmente cancelar este agendamento?');" title="Cancelar">❌</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="empty-message">Nenhuma consulta agendada para você no momento.</div>
-        {% endif %}
-        
-        <div class="actions">
-            <a href="{% url 'sair' %}" class="btn-voltar">Sair da Conta</a>
-        </div>
+        <p>Bem-vindo(a), <strong>{{ paciente.nome }}</strong>! Aqui estão as suas consultas agendadas.</p>
     </div>
-</body>
-</html>
+    
+    <div style="margin-bottom: 15px;">
+        <a href="{% url 'novo_agendamento_paciente' %}" class="win-btn">Nova Consulta</a>
+    </div>
+
+    {% if consultas %}
+        <table class="win-table">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Data</th>
+                    <th>Hora</th>
+                    <th style="text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consulta in consultas %}
+                <tr style="background-color: var(--win-white);">
+                    <td>{{ consulta.tipo }}</td>
+                    <td>{{ consulta.data|date:"d/m/Y" }}</td>
+                    <td>{{ consulta.hora|stringformat:"s"|slice:":5" }}</td>
+                    <td style="text-align: center;">
+                        <a href="{% url 'editar_agendamento_paciente' consulta.id_consulta %}" class="win-btn" style="padding: 2px 6px; font-size: 14px;" title="Editar">Editar</a>
+                        <a href="{% url 'apagar_agendamento_paciente' consulta.id_consulta %}" class="win-btn" style="padding: 2px 6px; font-size: 14px;" onclick="return confirm('Deseja cancelar este agendamento?');" title="Cancelar">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="win-fieldset" style="text-align: center; color: var(--win-darkgray);">
+            Nenhuma consulta agendada para você no momento.
+        </div>
+    {% endif %}
+    
+    <div style="margin-top: 20px; text-align: right;">
+        <a href="{% url 'sair' %}" class="win-btn">Sair</a>
+    </div>
+{% endblock %}

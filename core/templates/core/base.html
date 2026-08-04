@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Projeto CliniTerra{% endblock %}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        :root {
+            --win-bg: #008080;
+            --win-gray: #c0c0c0;
+            --win-darkgray: #808080;
+            --win-black: #000000;
+            --win-white: #ffffff;
+            --win-blue: #0000aa;
+            --win-light-blue: #0080ff;
+        }
+
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            font-family: 'VT323', monospace, 'MS Sans Serif', Arial, sans-serif;
+            background-color: var(--win-bg);
+            /* Optional pixel background pattern */
+            background-image: linear-gradient(45deg, #008080 25%, transparent 25%, transparent 75%, #008080 75%, #008080),
+                linear-gradient(45deg, #008080 25%, transparent 25%, transparent 75%, #008080 75%, #008080);
+            background-size: 2px 2px;
+            background-position: 0 0, 1px 1px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--win-black);
+        }
+
+        /* Janela estilo Win95 */
+        .win-window {
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-white);
+            border-left: 2px solid var(--win-white);
+            border-right: 2px solid var(--win-black);
+            border-bottom: 2px solid var(--win-black);
+            padding: 2px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .win-window-inner {
+            border-top: 1px solid var(--win-gray);
+            border-left: 1px solid var(--win-gray);
+            border-right: 1px solid var(--win-darkgray);
+            border-bottom: 1px solid var(--win-darkgray);
+            padding: 8px;
+        }
+
+        /* Barra de Título Win95 */
+        .win-titlebar {
+            background: linear-gradient(90deg, var(--win-blue), var(--win-light-blue));
+            color: var(--win-white);
+            padding: 4px 6px;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .win-titlebar-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Botões de controle da janela (Fechar) */
+        .win-controls {
+            display: flex;
+            gap: 2px;
+        }
+
+        .win-btn-control {
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-white);
+            border-left: 2px solid var(--win-white);
+            border-right: 2px solid var(--win-black);
+            border-bottom: 2px solid var(--win-black);
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--win-black);
+            cursor: pointer;
+            text-decoration: none;
+            line-height: 1;
+        }
+
+        .win-btn-control:active {
+            border-top: 2px solid var(--win-black);
+            border-left: 2px solid var(--win-black);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            padding-top: 2px;
+            padding-left: 2px;
+        }
+
+        /* Elementos de Texto */
+        h1,
+        h2,
+        h3,
+        p,
+        label {
+            margin-top: 0;
+            color: var(--win-black);
+        }
+
+        h2 {
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+
+        /* Inputs de Texto estilo Win95 (Afundados) */
+        .win-input {
+            width: 100%;
+            padding: 8px;
+            background-color: var(--win-white);
+            border-top: 2px solid var(--win-darkgray);
+            border-left: 2px solid var(--win-darkgray);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            box-sizing: border-box;
+            font-family: 'VT323', monospace;
+            font-size: 18px;
+            color: var(--win-black);
+            margin-bottom: 15px;
+        }
+
+        .win-input:focus {
+            outline: none;
+            background-color: #f0f0ff;
+        }
+
+        select.win-input {
+            padding: 4px;
+        }
+
+        /* Botões Padrões Win95 */
+        .win-btn {
+            display: inline-block;
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-white);
+            border-left: 2px solid var(--win-white);
+            border-right: 2px solid var(--win-black);
+            border-bottom: 2px solid var(--win-black);
+            padding: 8px 16px;
+            font-family: 'VT323', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--win-black);
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            box-sizing: border-box;
+            box-shadow: inset 1px 1px 0px var(--win-gray), inset -1px -1px 0px var(--win-darkgray);
+        }
+
+        .win-btn:active {
+            border-top: 2px solid var(--win-black);
+            border-left: 2px solid var(--win-black);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            box-shadow: inset 1px 1px 0px var(--win-darkgray);
+            padding-top: 10px;
+            padding-left: 18px;
+        }
+
+        .win-btn-block {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* Tabela Win95 */
+        .win-table {
+            width: 100%;
+            background-color: var(--win-white);
+            border-top: 2px solid var(--win-darkgray);
+            border-left: 2px solid var(--win-darkgray);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .win-table th,
+        .win-table td {
+            border: 1px solid var(--win-gray);
+            padding: 6px;
+            font-size: 18px;
+        }
+
+        .win-table th {
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-white);
+            border-left: 2px solid var(--win-white);
+            border-right: 2px solid var(--win-darkgray);
+            border-bottom: 2px solid var(--win-darkgray);
+            text-align: left;
+        }
+
+        /* Containers */
+        .win-fieldset {
+            border-top: 2px solid var(--win-white);
+            border-left: 2px solid var(--win-white);
+            border-right: 2px solid var(--win-darkgray);
+            border-bottom: 2px solid var(--win-darkgray);
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .win-legend {
+            background-color: var(--win-gray);
+            padding: 0 5px;
+            position: absolute;
+            top: -12px;
+            left: 10px;
+        }
+
+        /* Alertas / Caixas de Mensagem */
+        .win-alert {
+            background-color: var(--win-white);
+            border: 1px solid var(--win-black);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .win-alert-error {
+            border-left: 4px solid red;
+        }
+
+        .win-alert-success {
+            border-left: 4px solid green;
+        }
+
+        /* Mosaico de Datas / Horas */
+        .win-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .win-grid-item input[type="radio"] {
+            display: none;
+        }
+
+        .win-grid-item label {
+            display: inline-block;
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-white);
+            border-left: 2px solid var(--win-white);
+            border-right: 2px solid var(--win-black);
+            border-bottom: 2px solid var(--win-black);
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .win-grid-item input[type="radio"]:checked+label {
+            border-top: 2px solid var(--win-black);
+            border-left: 2px solid var(--win-black);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVQIW2NkYGD4z8DAwMgAI0AMCKcCBXY/e2gAAAAASUVORK5CYII=');
+            /* Dithered pattern */
+        }
+
+        .win-grid-item label:active {
+            border-top: 2px solid var(--win-black);
+            border-left: 2px solid var(--win-black);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+        }
+
+        a {
+            color: var(--win-blue);
+        }
+
+        a:hover {
+            color: var(--win-light-blue);
+        }
+
+            {
+            % block extra_css %
+        }
+
+            {
+            % endblock %
+        }
+    </style>
+</head>
+
+<body>
+    <div class="win-window" style="{% block window_style %}{% endblock %}">
+        <div class="win-titlebar">
+            <div class="win-titlebar-icon">
+                {% block titlebar_icon %}💾{% endblock %}
+                <span>{% block titlebar_text %}CliniTerra.exe{% endblock %}</span>
+            </div>
+            <div class="win-controls">
+                <div class="win-btn-control">_</div>
+                <div class="win-btn-control">□</div>
+                <a href="{% block close_url %}/{% endblock %}" class="win-btn-control">X</a>
+            </div>
+        </div>
+
+        <div class="win-window-inner">
+            <!-- Barra de Menus Clássica -->
+            {% block menu_bar %}
+            <div
+                style="border-bottom: 1px solid var(--win-darkgray); padding-bottom: 4px; margin-bottom: 10px; font-size: 18px;">
+                <u>F</u>ile &nbsp;&nbsp; <u>E</u>dit &nbsp;&nbsp; <u>V</u>iew &nbsp;&nbsp; <u>H</u>elp
+            </div>
+            {% endblock %}
+
+            <div style="padding: 10px;">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

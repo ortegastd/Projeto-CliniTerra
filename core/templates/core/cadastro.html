@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+
+{% block title %}CliniTerra - Cadastrar Paciente (Recepção){% endblock %}
+
+{% block titlebar_icon %}📝{% endblock %}
+{% block titlebar_text %}AdminRegistration.exe{% endblock %}
+
+{% block window_style %}max-width: 500px;{% endblock %}
+
+{% block content %}
+    <div style="margin-bottom: 20px;">
+        <h2>Cadastro Pela Recepção</h2>
+        <p>Cadastre um paciente informando os dados básicos.</p>
+    </div>
+
+    <form method="POST" action="{% url 'cadastro' %}">
+        {% csrf_token %}
+        <div class="win-fieldset">
+            <span class="win-legend">Dados Pessoais</span>
+            <div style="margin-bottom: 10px;">
+                <label for="nome" style="display: block; margin-bottom: 5px;">Nome Completo:</label>
+                <input type="text" id="nome" name="nome" class="win-input" required>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <div style="flex: 1;">
+                    <label for="nascimento" style="display: block; margin-bottom: 5px;">Data de Nascimento:</label>
+                    <input type="date" id="nascimento" name="nascimento" class="win-input" required>
+                </div>
+                <div style="flex: 1;">
+                    <label for="telefone" style="display: block; margin-bottom: 5px;">Telefone:</label>
+                    <input type="tel" id="telefone" name="telefone" class="win-input" required>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="win-btn" style="flex: 2;">CADASTRAR</button>
+            <a href="{% url 'lista_clientes' %}" class="win-btn" style="flex: 1; text-align: center;">Cancelar</a>
+        </div>
+    </form>
+{% endblock %}
