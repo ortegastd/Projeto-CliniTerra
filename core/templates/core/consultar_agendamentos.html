@@ -130,8 +130,12 @@
     <div class="container">
         <h2>Meu Painel</h2>
         
-        <div style="margin-bottom: 30px; text-align: center; color: var(--cinza-claro);">
+        <div style="margin-bottom: 20px; text-align: center; color: var(--cinza-claro);">
             Bem-vindo(a), <strong>{{ paciente.nome }}</strong>! Aqui estão as suas consultas agendadas:
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="{% url 'novo_agendamento_paciente' %}" class="btn-buscar" style="display: inline-block; text-decoration: none; padding: 10px 20px;">+ Agendar Nova Consulta</a>
         </div>
 
         {% if consultas %}

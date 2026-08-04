@@ -47,7 +47,7 @@ def cadastro_paciente_view(request):
                     senha=senha
                 )
                 request.session['paciente_id'] = paciente.id_usuario
-                return redirect('consultar_agendamentos')
+                return redirect('novo_agendamento_paciente')
             except Exception as e:
                 erro = "Ocorreu um erro ao realizar o cadastro."
 
@@ -131,3 +131,33 @@ def consultar_agendamentos_view(request):
     consultas = Consulta.objects.filter(paciente=paciente).order_by('data', 'hora')
         
     return render(request, 'core/consultar_agendamentos.html', {'consultas': consultas, 'paciente': paciente})
+
+# 8. Agendar Nova Consulta (Pelo próprio Paciente)
+def novo_agendamento_paciente_view(request):
+    paciente_id = request.session.get('paciente_id')
+    
+    if not paciente_id:
+        return redirect('home')
+        
+    paciente = get_object_or_404(Usuario, id_usuario=paciente_id)
+    sucesso = False
+    
+    if request.method == 'POST':
+        tipo = request.POST.get('tipo')
+        data_str = request.POST.get('data')
+        hora_str = request.POST.get('hora')
+        
+        if tipo and data_str and hora_str:
+            try:
+                Consulta.objects.create(
+                    paciente=paciente,
+                    tipo=tipo,
+                    data=data_str,
+                    hora=hora_str
+                )
+                sucesso = True
+                return redirect('consultar_agendamentos')
+            except Exception as e:
+                print("ERRO AO SALVAR CONSULTA DO PACIENTE:", e)
+                
+    return render(request, 'core/agendamento_paciente.html', {'paciente': paciente})
