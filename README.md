@@ -52,15 +52,10 @@ cd Projeto-CliniTerra/Projeto-CliniTerra-main
 pip install django
 ```
 
-**3. Aplique as migrações no banco de dados:**
-```bash
-python manage.py migrate
-```
-
-**4. Inicie o servidor de desenvolvimento:**
+**3. Inicie o servidor de desenvolvimento:**
 ```bash
 python manage.py runserver
 ```
 
-**5. Acesse no navegador:**
+**4. Acesse no navegador:**
 Abra o seu navegador e acesse: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
