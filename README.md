@@ -8,10 +8,25 @@
 
 ## 📸 Demonstração do Projeto
 
-![Demonstração do CliniTerra](demo.gif)
+*(Adicione seus GIFs aqui na pasta raiz e substitua os nomes dos arquivos abaixo)*
+
+### 1. Painel de Login e Navegação
+![Login e Interface](login.gif)
+
+### 2. Efeitos Sonoros e Formatação Automática
+![Interação e Sons](interacao.gif)
 
 ## 🚀 Sobre o Projeto
 O **CliniTerra** é uma aplicação web desenvolvida em **Python** utilizando o framework **Django**. Originalmente um simples sistema de cadastro, ele evoluiu para um sistema completo de gestão de pacientes e agendamentos com uma imersiva interface **Retro Windows 95**, completa com efeitos sonoros em 8-bits renderizados via Web Audio API.
+
+## 🛠️ Tecnologias Utilizadas
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 
 ## ✨ Novas Funcionalidades
 - **🎨 Interface Nostálgica (Win95):** Botões 3D, fontes de pixel (VT323), janelas clássicas e gradientes retrô, tudo feito com CSS puro.
@@ -21,11 +36,6 @@ O **CliniTerra** é uma aplicação web desenvolvida em **Python** utilizando o 
 - **👀 Ícones SVG Customizados:** Substituição de emojis modernos por vetores minimalistas criados sob medida (como o olho de ocultar senha na pegada pixel art).
 - **🧠 Cálculo Automático de Idade:** A idade do paciente é calculada matematicamente baseada na data de nascimento (com restrição automática do ano).
 - **🔥 "FORMAT C:" (Limpeza Completa):** Sistema seguro para deletar cadastros individuais ou formatar completamente o banco de dados em um clique.
-
-## 🛠️ Tecnologias Utilizadas
-- **Backend:** Python 3.11+, Django 5.0.4
-- **Frontend:** HTML5, Vanilla CSS, JavaScript Puro (DOM & Web Audio API)
-- **Banco de Dados:** SQLite3
 
 ## 💻 Como rodar o projeto localmente
 
