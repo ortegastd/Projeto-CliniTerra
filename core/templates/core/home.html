@@ -107,7 +107,14 @@
                 <label for="senha" style="display: block; margin-bottom: 5px; font-size: 14px; color: var(--cinza-claro);">Senha</label>
                 <div style="position: relative;">
                     <input type="password" name="senha" id="senha" placeholder="Sua senha secreta" required style="width: 100%; padding: 12px; padding-right: 40px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px; box-sizing: border-box;">
-                    <span id="toggleSenha" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;" title="Mostrar/Ocultar Senha">👁️</span>
+                    <span id="toggleSenha" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; user-select: none; display: flex; align-items: center;" title="Mostrar/Ocultar Senha">
+                        <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cinza-claro)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cinza-claro)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    </span>
                 </div>
             </div>
             
@@ -120,10 +127,14 @@
     <script>
         const toggleSenha = document.getElementById('toggleSenha');
         const senhaInput = document.getElementById('senha');
+        const eyeOpen = document.getElementById('eye-open');
+        const eyeClosed = document.getElementById('eye-closed');
 
         toggleSenha.addEventListener('click', function () {
-            const tipo = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            senhaInput.setAttribute('type', tipo);
+            const isPassword = senhaInput.getAttribute('type') === 'password';
+            senhaInput.setAttribute('type', isPassword ? 'text' : 'password');
+            eyeOpen.style.display = isPassword ? 'none' : 'block';
+            eyeClosed.style.display = isPassword ? 'block' : 'none';
         });
     </script>
 </body>
