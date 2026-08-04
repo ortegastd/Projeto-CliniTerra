@@ -277,9 +277,47 @@
             </div>
 
             <button type="submit" class="btn-enviar">AGENDAR</button>
-            
-            <a href="{% url 'lista_clientes' %}" class="btn-voltar">← Voltar para o Painel</a>
+            <a href="{% url 'lista_clientes' %}" class="btn-voltar">&larr; Cancelar e Voltar para Home</a>
         </form>
     </div>
+
+    <script>
+        const bloqueados = JSON.parse('{{ bloqueados_json|escapejs }}');
+        const dataInputs = document.querySelectorAll('input[name="data"]');
+        const horaInputs = document.querySelectorAll('input[name="hora"]');
+
+        function atualizarHorarios() {
+            const checkedData = document.querySelector('input[name="data"]:checked');
+            if (!checkedData) return;
+            
+            const dataSelecionada = checkedData.value;
+            const horariosBloqueados = bloqueados[dataSelecionada] || [];
+
+            horaInputs.forEach(horaInput => {
+                const label = horaInput.nextElementSibling;
+                if (horariosBloqueados.includes(horaInput.value)) {
+                    horaInput.disabled = true;
+                    if (horaInput.checked) {
+                        horaInput.checked = false;
+                    }
+                    label.style.opacity = '0.3';
+                    label.style.cursor = 'not-allowed';
+                    label.style.textDecoration = 'line-through';
+                } else {
+                    horaInput.disabled = false;
+                    label.style.opacity = '1';
+                    label.style.cursor = 'pointer';
+                    label.style.textDecoration = 'none';
+                }
+            });
+        }
+
+        dataInputs.forEach(input => {
+            input.addEventListener('change', atualizarHorarios);
+        });
+
+        // Run on load
+        atualizarHorarios();
+    </script>
 </body>
 </html>

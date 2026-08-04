@@ -117,7 +117,7 @@ def gerar_calendario():
             })
         calendario_dados.append(dias_semana)
         
-    meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+        meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
     
     return {
         'mes_nome': meses[hoje.month],
@@ -125,11 +125,28 @@ def gerar_calendario():
         'semanas': calendario_dados
     }
 
+def get_agendamentos_bloqueados(exclude_id=None):
+    import json
+    consultas = Consulta.objects.all()
+    if exclude_id:
+        consultas = consultas.exclude(id_consulta=exclude_id)
+        
+    bloqueados = {}
+    for c in consultas:
+        if c.data and c.hora:
+            data_str = c.data if isinstance(c.data, str) else c.data.strftime('%Y-%m-%d')
+            hora_str = c.hora[:5] if isinstance(c.hora, str) else c.hora.strftime('%H:%M')
+            if data_str not in bloqueados:
+                bloqueados[data_str] = []
+            bloqueados[data_str].append(hora_str)
+    return json.dumps(bloqueados)
+
 # 6. Agendar Consulta (Recepção)
 def agendar_consulta_view(request):
     sucesso = False
     usuarios = Usuario.objects.all().order_by('nome')
     calendario = gerar_calendario()
+    bloqueados_json = get_agendamentos_bloqueados()
     
     if request.method == 'POST':
         id_paciente = request.POST.get('paciente')
@@ -150,7 +167,7 @@ def agendar_consulta_view(request):
             except Exception as e:
                 print("ERRO AO SALVAR CONSULTA:", e)
                 
-    return render(request, 'core/agendar_consulta.html', {'usuarios': usuarios, 'sucesso': sucesso, 'datas_disponiveis': datas_disponiveis})
+    return render(request, 'core/agendar_consulta.html', {'usuarios': usuarios, 'sucesso': sucesso, 'calendario': calendario, 'bloqueados_json': bloqueados_json})
 
 # 7. Consultar Agendamentos (Painel do Paciente)
 def consultar_agendamentos_view(request):
@@ -174,6 +191,7 @@ def novo_agendamento_paciente_view(request):
     paciente = get_object_or_404(Usuario, id_usuario=paciente_id)
     sucesso = False
     calendario = gerar_calendario()
+    bloqueados_json = get_agendamentos_bloqueados()
     
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
@@ -193,7 +211,7 @@ def novo_agendamento_paciente_view(request):
             except Exception as e:
                 print("ERRO AO SALVAR CONSULTA DO PACIENTE:", e)
                 
-    return render(request, 'core/agendamento_paciente.html', {'paciente': paciente, 'calendario': calendario})
+    return render(request, 'core/agendamento_paciente.html', {'paciente': paciente, 'calendario': calendario, 'bloqueados_json': bloqueados_json})
 
 # 9. Editar Agendamento (Paciente)
 def editar_agendamento_paciente_view(request, id_consulta):
@@ -203,6 +221,7 @@ def editar_agendamento_paciente_view(request, id_consulta):
         
     consulta = get_object_or_404(Consulta, id_consulta=id_consulta, paciente__id_usuario=paciente_id)
     calendario = gerar_calendario()
+    bloqueados_json = get_agendamentos_bloqueados(exclude_id=id_consulta)
     
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
@@ -216,7 +235,7 @@ def editar_agendamento_paciente_view(request, id_consulta):
             consulta.save()
             return redirect('consultar_agendamentos')
             
-    return render(request, 'core/editar_agendamento_paciente.html', {'consulta': consulta, 'calendario': calendario})
+    return render(request, 'core/editar_agendamento_paciente.html', {'consulta': consulta, 'calendario': calendario, 'bloqueados_json': bloqueados_json})
 
 # 10. Apagar Agendamento (Paciente)
 def apagar_agendamento_paciente_view(request, id_consulta):
