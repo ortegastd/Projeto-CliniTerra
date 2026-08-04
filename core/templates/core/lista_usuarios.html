@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Dados Cadastrais - Projeto CliniTerra</title>
+    <style>
+        :root {
+            --marrom-escuro: #3E2723;
+            --marrom-claro: #8C391A;
+            --cinza-claro: #D3D3D3;
+            --branco: #FFFFFF;
+            --vermelho: #D32F2F;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #973F2D 0%, #532A1B 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-lista {
+            background-color: var(--marrom-escuro);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 700px; 
+            color: var(--branco);
+            text-align: center;
+            position: relative;
+        }
+
+        .link-voltar-painel {
+            display: inline-block;
+            color: var(--cinza-claro);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 15px;
+            transition: color 0.3s;
+        }
+
+        .link-voltar-painel:hover {
+            color: var(--branco);
+            text-decoration: underline;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: var(--cinza-claro);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(211, 211, 211, 0.2);
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--cinza-claro);
+            font-weight: bold;
+        }
+
+        td {
+            color: var(--branco);
+        }
+
+        .btn-excluir {
+            color: var(--vermelho);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-excluir:hover {
+            background-color: rgba(211, 47, 47, 0.2);
+        }
+
+        .btn-limpar-tudo {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background-color: transparent;
+            color: var(--vermelho);
+            border: 1px solid var(--vermelho);
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-limpar-tudo:hover {
+            background-color: var(--vermelho);
+            color: var(--branco);
+        }
+    </style>
+</head>
+<body>
+    <div class="card-lista">
+        <a href="{% url 'home' %}" class="link-voltar-painel">← Sair do Painel Administrativo</a>
+
+        <h2>Banco de Dados Cadastrais</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Idade (anos)</th>
+                    <th>Telefone</th>
+                    <th style="text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id_usuario }}</td>
+                    <td>{{ usuario.nome }}</td>
+                    <td>{{ usuario.idade }}</td>
+                    <td>{{ usuario.telefone }}</td>
+                    <td style="text-align: center;">
+                        <a href="{% url 'excluir_usuario' usuario.id_usuario %}" class="btn-excluir" onclick="return confirm('Deseja realmente excluir este cliente?');">❌</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--cinza-claro);">
+                        Nenhum registro encontrado no banco de dados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if usuarios %}
+            <a href="{% url 'limpar_banco' %}" class="btn-limpar-tudo" onclick="return confirm('Tem certeza que deseja apagar TODOS os clientes do banco de dados?');">⚠️ APAGAR TODOS OS REGISTROS</a>
+        {% endif %}
+    </div>
+</body>
+</html>

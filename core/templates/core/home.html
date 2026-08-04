@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo - Projeto CliniTerra</title>
+    <style>
+        :root {
+            --marrom-escuro: #3E2723;
+            --marrom-claro: #8C391A;
+            --cinza-claro: #D3D3D3;
+            --branco: #FFFFFF;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #973F2D 0%, #532A1B 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* ÍCONE DISFARÇADO DO BANCO DE DADOS (SÓ PARA TESTES) */
+        .acesso-secreto {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            text-decoration: none;
+            font-size: 16px;
+            opacity: 0.2;
+        }
+
+        .acesso-secreto:hover {
+            opacity: 1.0;
+        }
+
+        .card-home {
+            background-color: var(--marrom-escuro);
+            padding: 50px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px; 
+            color: var(--branco);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--branco);
+        }
+
+        p {
+            color: var(--cinza-claro);
+            font-size: 16px;
+            margin-bottom: 35px;
+        }
+
+        .btn-entrar {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background-color: var(--marrom-claro);
+            color: var(--branco);
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-entrar:hover {
+            background-color: #BCAAA4;
+            color: var(--marrom-escuro);
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+
+    <a href="{% url 'lista_clientes' %}" class="acesso-secreto" title="Acesso Administrativo">🛢️</a>
+
+    <div class="card-home">
+        <h1>Projeto CliniTerra</h1>
+        <p>Seja bem-vindo ao nosso sistema!</p>
+        <a href="{% url 'cadastro' %}" class="btn-entrar">REALIZAR CADASTRO</a>
+    </div>
+</body>
+</html>
