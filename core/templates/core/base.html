@@ -442,6 +442,44 @@
                 el.addEventListener('mousedown', playRetroClick);
             });
         });
+
+        // Formatação automática de campos (Nome e Telefone)
+        document.addEventListener('input', (e) => {
+            const el = e.target;
+            
+            // Nomes (primeira letra maiúscula, ignorando preposições)
+            if (el.name === 'nome' || el.id === 'nome') {
+                const preposicoes = ["da", "de", "do", "das", "dos", "e"];
+                let val = el.value.toLowerCase();
+                let words = val.split(' ');
+                el.value = words.map((word, index) => {
+                    if (index !== 0 && preposicoes.includes(word)) {
+                        return word;
+                    }
+                    if (word.length > 0) {
+                        return word.charAt(0).toUpperCase() + word.slice(1);
+                    }
+                    return word;
+                }).join(' ');
+            }
+            
+            // Telefone: (XX) XXXXX-XXXX
+            if (el.name === 'telefone' || el.id === 'telefone') {
+                let val = el.value.replace(/\D/g, ''); // Remove tudo que não é número
+                if (val.length > 11) val = val.slice(0, 11);
+                
+                if (val.length > 10) {
+                    val = val.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+                } else if (val.length > 6) {
+                    val = val.replace(/^(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
+                } else if (val.length > 2) {
+                    val = val.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+                } else if (val.length > 0) {
+                    val = val.replace(/^(\d*)/, '($1');
+                }
+                el.value = val;
+            }
+        });
     </script>
     {% block extra_js %}{% endblock %}
 </body>
