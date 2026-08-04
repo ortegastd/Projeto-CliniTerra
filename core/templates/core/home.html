@@ -105,7 +105,10 @@
             </div>
             <div style="margin-bottom: 25px; text-align: left;">
                 <label for="senha" style="display: block; margin-bottom: 5px; font-size: 14px; color: var(--cinza-claro);">Senha</label>
-                <input type="password" name="senha" id="senha" placeholder="Sua senha secreta" required style="width: 100%; padding: 12px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px; box-sizing: border-box;">
+                <div style="position: relative;">
+                    <input type="password" name="senha" id="senha" placeholder="Sua senha secreta" required style="width: 100%; padding: 12px; padding-right: 40px; border: 1px solid rgba(211, 211, 211, 0.4); border-radius: 6px; background-color: transparent; color: var(--branco); font-size: 14px; box-sizing: border-box;">
+                    <span id="toggleSenha" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;" title="Mostrar/Ocultar Senha">👁️</span>
+                </div>
             </div>
             
             <button type="submit" class="btn-entrar" style="margin-bottom: 15px;">ENTRAR</button>
@@ -113,5 +116,15 @@
 
         <a href="{% url 'cadastro_paciente' %}" style="color: var(--cinza-claro); font-size: 14px; text-decoration: none;">Ainda não tem conta? <span style="text-decoration: underline;">Cadastre-se</span></a>
     </div>
+
+    <script>
+        const toggleSenha = document.getElementById('toggleSenha');
+        const senhaInput = document.getElementById('senha');
+
+        toggleSenha.addEventListener('click', function () {
+            const tipo = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            senhaInput.setAttribute('type', tipo);
+        });
+    </script>
 </body>
 </html>

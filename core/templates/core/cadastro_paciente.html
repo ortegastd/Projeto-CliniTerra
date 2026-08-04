@@ -147,7 +147,10 @@
 
             <div class="form-group">
                 <label for="senha">Senha (Mínimo de 8 caracteres)</label>
-                <input type="password" id="senha" name="senha" minlength="8" placeholder="Digite sua senha" required>
+                <div style="position: relative;">
+                    <input type="password" id="senha" name="senha" minlength="8" placeholder="Digite sua senha" required style="padding-right: 40px;">
+                    <span id="toggleSenha" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;" title="Mostrar/Ocultar Senha">👁️</span>
+                </div>
             </div>
 
             <button type="submit" class="btn-enviar">CADASTRAR</button>
@@ -155,5 +158,15 @@
             <a href="{% url 'home' %}" class="btn-voltar">Já tenho conta. Fazer Login</a>
         </form>
     </div>
+
+    <script>
+        const toggleSenha = document.getElementById('toggleSenha');
+        const senhaInput = document.getElementById('senha');
+
+        toggleSenha.addEventListener('click', function () {
+            const tipo = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            senhaInput.setAttribute('type', tipo);
+        });
+    </script>
 </body>
 </html>
