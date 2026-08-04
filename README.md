@@ -8,7 +8,7 @@
 
 ## 📸 Demonstração do Projeto
 
-![Demonstração do CliniTerra](demo.webp)
+![Demonstração do CliniTerra](demo.gif)
 
 ## 🚀 Sobre o Projeto
 O **CliniTerra** é uma aplicação web desenvolvida em **Python** utilizando o framework **Django**. Seu objetivo é fornecer uma interface rápida e intuitiva para o registro de clientes, com recursos inteligentes como o cálculo automático da idade com base na data de nascimento.
