@@ -112,13 +112,38 @@
             background-color: var(--vermelho);
             color: var(--branco);
         }
+
+        .btn-admin {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--marrom-claro);
+            color: var(--branco);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-admin:hover {
+            background-color: #BCAAA4;
+            color: var(--marrom-escuro);
+        }
     </style>
 </head>
 <body>
     <div class="card-lista">
         <a href="{% url 'home' %}" class="link-voltar-painel">← Sair do Painel Administrativo</a>
 
-        <h2>Banco de Dados Cadastrais</h2>
+        <h2>Painel Administrativo</h2>
+        
+        <div style="margin-bottom: 30px;">
+            <a href="{% url 'cadastro' %}" class="btn-admin">📝 CADASTRAR PACIENTE</a>
+            <a href="{% url 'agendar_consulta' %}" class="btn-admin">📅 AGENDAR CONSULTA</a>
+        </div>
+
+        <h3 style="color: var(--cinza-claro); text-align: left; margin-bottom: 15px; border-bottom: 1px solid rgba(211,211,211,0.2); padding-bottom: 10px;">Banco de Dados Cadastrais</h3>
 
         <table>
             <thead>

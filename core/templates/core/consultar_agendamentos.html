@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Agendamentos - Projeto CliniTerra</title>
+    <style>
+        :root {
+            --marrom-escuro: #3E2723;
+            --marrom-claro: #8C391A;
+            --cinza-claro: #D3D3D3;
+            --branco: #FFFFFF;
+            --marrom-fundo: #5D4037;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #973F2D 0%, #532A1B 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: var(--marrom-escuro);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            color: var(--branco);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--cinza-claro);
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(211, 211, 211, 0.4);
+            border-radius: 6px;
+            background-color: transparent;
+            color: var(--branco);
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--marrom-claro);
+        }
+
+        .btn-buscar {
+            padding: 12px 24px;
+            background-color: var(--marrom-claro);
+            color: var(--branco);
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-buscar:hover {
+            background-color: #BCAAA4;
+            color: var(--marrom-escuro);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background-color: var(--marrom-fundo);
+            color: var(--cinza-claro);
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: var(--cinza-claro);
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn-voltar {
+            color: var(--cinza-claro);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .btn-voltar:hover {
+            color: var(--branco);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Meus Agendamentos</h2>
+        
+        <form method="GET" action="{% url 'consultar_agendamentos' %}" class="search-box">
+            <input type="text" name="nome" placeholder="Digite seu nome para buscar..." value="{{ nome_busca }}">
+            <button type="submit" class="btn-buscar">PESQUISAR</button>
+        </form>
+
+        {% if nome_busca %}
+            {% if consultas %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Paciente</th>
+                            <th>Tipo</th>
+                            <th>Data</th>
+                            <th>Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for consulta in consultas %}
+                        <tr>
+                            <td>{{ consulta.paciente.nome }}</td>
+                            <td>{{ consulta.tipo }}</td>
+                            <td>{{ consulta.data|date:"d/m/Y" }}</td>
+                            <td>{{ consulta.hora|time:"H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty-message">Nenhum agendamento encontrado para o nome digitado.</div>
+            {% endif %}
+        {% else %}
+            <div class="empty-message">Digite o seu nome acima para pesquisar.</div>
+        {% endif %}
+        
+        <div class="actions">
+            <a href="{% url 'home' %}" class="btn-voltar">← Voltar para o Início</a>
+        </div>
+    </div>
+</body>
+</html>

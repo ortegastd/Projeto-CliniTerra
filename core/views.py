@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from datetime import datetime
-from .models import Usuario
+from .models import Usuario, Consulta
 
 # 1. Página de Boas-Vindas
 def home_view(request):
@@ -46,3 +46,39 @@ def limpar_banco_view(request):
     with connection.cursor() as cursor:
         cursor.execute("DELETE FROM sqlite_sequence WHERE name='core_usuario';")
     return redirect('lista_clientes')
+
+# 6. Agendar Consulta
+def agendar_consulta_view(request):
+    sucesso = False
+    usuarios = Usuario.objects.all().order_by('nome')
+    
+    if request.method == 'POST':
+        id_paciente = request.POST.get('paciente')
+        tipo = request.POST.get('tipo')
+        data_str = request.POST.get('data')
+        hora_str = request.POST.get('hora')
+        
+        if id_paciente and tipo and data_str and hora_str:
+            paciente = get_object_or_404(Usuario, id_usuario=id_paciente)
+            try:
+                Consulta.objects.create(
+                    paciente=paciente,
+                    tipo=tipo,
+                    data=data_str,
+                    hora=hora_str
+                )
+                sucesso = True
+            except Exception as e:
+                print("ERRO AO SALVAR CONSULTA:", e)
+                
+    return render(request, 'core/agendar_consulta.html', {'usuarios': usuarios, 'sucesso': sucesso})
+
+# 7. Consultar Agendamentos por Nome
+def consultar_agendamentos_view(request):
+    nome_busca = request.GET.get('nome', '')
+    consultas = []
+    
+    if nome_busca:
+        consultas = Consulta.objects.filter(paciente__nome__icontains=nome_busca).order_by('data', 'hora')
+        
+    return render(request, 'core/consultar_agendamentos.html', {'consultas': consultas, 'nome_busca': nome_busca})
